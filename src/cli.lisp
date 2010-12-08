@@ -5,14 +5,14 @@
         script   (get (process.binding 'evals) "Script")
         context  (script.create-context))
 
-(defun create-context ()
+(def create-context ()
   (setf context.initialized? true)
   (set module 'filename (concat (process.cwd) "/exec"))
   (set context 'module  module
                'require require)
   (each-key key global (set context key (get global key))))
 
-(defun run-in-sandbox (js &optional input-path)
+(def run-in-sandbox (js &optional input-path)
   (when (not context.initialized?) (create-context))
   (when (defined? input-path)
     (set context '**dirname (path.dirname input-path))
@@ -30,12 +30,12 @@
   execute   false
   unlabeled 'input)
 
-(defun cli.version (&rest args)
+(def cli.version (&rest args)
   (console.log (sibilant.version-string)))
 
-(defun cli.repl (&rest args) (require "sibilant/repl"))
+(def cli.repl (&rest args) (require "sibilant/repl"))
 
-(defun cli.eval (&rest args)
+(def cli.eval (&rest args)
   (if (empty? args)
       (progn
 	(defvar stdin (process.open-stdin)
@@ -49,7 +49,7 @@
 	  (run-in-sandbox (sibilant.translate-all arg)))))
 
 
-(defun cli.help (&rest args)
+(def cli.help (&rest args)
   (console.log
 "Hi there!  Thanks for installing sibilant.
 Please leave feedback on github issues (http://github.com/jbr/sibilant/issues)
@@ -112,10 +112,10 @@ $ sibilant --repl
 (defvar output-dir
   (when cli-options.output (first cli-options.output)))
 
-(defun strip-shebang (data)
+(def strip-shebang (data)
   (data.replace /^#!.*\n/ ""))
 
-(defun sibilant.translate-file (file-name)
+(def sibilant.translate-file (file-name)
   (sibilant.translate-all (strip-shebang (fs.read-file-sync file-name "utf8"))))
 
 (each (input-file) (or cli-options.input (list))

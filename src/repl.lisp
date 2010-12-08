@@ -7,7 +7,7 @@
 	sys        (require 'sys)
 	display-prompt-on-drain false)
 
-(defun create-context ()
+(def create-context ()
   (defvar context (script.create-context))
   (set module 'filename (concat (process.cwd) "/exec"))
   (set context 'module  module
@@ -19,7 +19,7 @@
 
 (stream.on 'data (lambda (data) (readline.write data)))
 
-(defun display-prompt ()
+(def display-prompt ()
   (readline.set-prompt
    (concat (if (> cmd-buffer.length 10)
 	       (concat "..." (cmd-buffer.slice -10))

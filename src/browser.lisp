@@ -1,7 +1,7 @@
 (scoped
  (defvar sibilant (list))
- (defun error (str) (throw (new (-error str))))
- (defun inspect (item) (if item.to-source (item.to-source) (item.to-string)))
+ (def error (str) (throw (new (-error str))))
+ (def inspect (item) (if item.to-source (item.to-source) (item.to-string)))
  (set window 'sibilant sibilant)
 
  (defvar exports (hash))
@@ -12,10 +12,10 @@
   (defvar sibilant window.sibilant
     scripts (list))
 
-  (defun eval-with-try-catch (js)
+  (def eval-with-try-catch (js)
     (try (eval js) (progn (console.log js) (throw e))))
 
-  (defun sibilant.script-loaded ()
+  (def sibilant.script-loaded ()
     (defvar lisp null
       js   null)
     (when (not (sibilant.load-next-script))
@@ -33,7 +33,7 @@
   (setf scripts ($.make-array (chain
     ($ "script[type=\"text/lisp\"][src]") (map (thunk this.src)))))
 
-  (defun sibilant.load-next-script ()
+  (def sibilant.load-next-script ()
     (defvar next-script (scripts.shift))
     (when (defined? next-script)
       ($.get next-script (lambda (data)

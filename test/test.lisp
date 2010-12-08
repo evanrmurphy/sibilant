@@ -7,24 +7,24 @@
 
 (console.log (concat "Testing " (sibilant.version-string)))
 
-(defun trim (string)
+(def trim (string)
   (send string trim))
 
-(defun assert-equal (expected actual &optional message)
+(def assert-equal (expected actual &optional message)
   (sys.print (if (= expected actual) (progn (incr passes) ".")
                (progn (incr fails)
                       (concat "F\n\n" (if message (concat message "\n\n") "") "expected "expected 
                               "\n\nbut got " actual "\n\n")))))
 
-(defun assert-translation (sibilant-code js-code)
+(def assert-translation (sibilant-code js-code)
   (assert-equal (trim js-code)
 		(trim (sibilant.translate-all sibilant-code))))
 
-(defun assert-true (&rest args)
+(def assert-true (&rest args)
   (args.unshift true)
   (apply assert-equal args))
 
-(defun assert-false (&rest args)
+(def assert-false (&rest args)
   (args.unshift false)
   (apply assert-equal args))
 
@@ -165,7 +165,7 @@ delete bam.bibble;")
 
 (assert-translation "(number? x)" "typeof(x) === 'number'")
 
-(assert-translation "(defun foo.bar (a) (* a 2))" "foo.bar = (function(a) {
+(assert-translation "(def foo.bar (a) (* a 2))" "foo.bar = (function(a) {
   // a:required
   return (a * 2);
 });")

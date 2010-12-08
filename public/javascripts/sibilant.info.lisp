@@ -8,7 +8,7 @@
 ($ (thunk
     (defvar $window ($ window))
 
-    (defun check-hash ()
+    (def check-hash ()
       (when (defined? check-hash.timeout)
 	(clear-timeout check-hash.timeout)
 	(delete check-hash.timeout))

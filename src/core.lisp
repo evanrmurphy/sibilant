@@ -25,22 +25,22 @@
 	    parse-stack (list tokens)
 	    specials (list))
 
-	  (defun accept-token (token)
+	  (def accept-token (token)
 	    (send (get parse-stack 0) push token))
 
-	  (defun increase-nesting ()
+	  (def increase-nesting ()
 	    (defvar new-arr (list))
 	    (accept-token new-arr)
 	    (parse-stack.unshift new-arr))
 
-	  (defun decrease-nesting ()
+	  (def decrease-nesting ()
 	    (specials.shift)
 	    (parse-stack.shift)
 	    (when (zero? parse-stack.length)
 	      (throw (concat "unbalanced parens:\n"
 			     (call inspect parse-stack)))))
 
-	  (defun handle-token (token)
+	  (def handle-token (token)
 	    (defvar special (first token)
 	      token token)
 	    (if (= special "'")
@@ -74,7 +74,7 @@
 
 (force-semi)
 
-(defun indent (&rest args)
+(def indent (&rest args)
   (concat
    (chain (compact args)
 	  (join "\n")
@@ -82,7 +82,7 @@
 	  (replace /\n/g "\n  "))
    "\n"))
 
-(defun construct-hash (array-of-arrays)
+(def construct-hash (array-of-arrays)
   (inject (hash) array-of-arrays
 	  (lambda (object item)
 	    (set object (first item) (get object (second item)))
@@ -125,10 +125,10 @@
 	 default-return)))
 
 
-(defun macros.statement (&rest args)
+(def macros.statement (&rest args)
   (concat (apply macros.call args) ";\n"))
 
-(defun macros.progn (&rest body)
+(def macros.progn (&rest body)
   (defvar last-index (-math.max 0 (- body.length 1)))
 
   (set body last-index (list 'return (get body last-index)))
@@ -137,18 +137,18 @@
 	(map body (lambda (arg)
 		    (concat (translate arg) ";")))))
 
-(defun macros.call (fn-name &rest args)
+(def macros.call (fn-name &rest args)
   (concat (translate fn-name)
 	  "(" (join ", " (map args translate)) ")"))
 
-(defun macros.defun (fn-name &rest args-and-body)
+(def macros.def (fn-name &rest args-and-body)
   (defvar fn-name-tr (translate fn-name)
     start (if (/\./ fn-name-tr) "" "var "))
   (concat start fn-name-tr " = "
 	  (apply macros.lambda args-and-body)
 	  ";\n"))
 
-(defun macros.defmacro (name &rest args-and-body)
+(def macros.defmacro (name &rest args-and-body)
   (defvar js (apply macros.lambda args-and-body)
     name (translate name))
   (try (set macros name (eval js))
@@ -156,10 +156,10 @@
 		      name ":\n" (indent js))))
   undefined)
 
-(defun macros.concat (&rest args)
+(def macros.concat (&rest args)
   (concat "(" (join " + " (map args translate)) ")"))
 
-(defun transform-args (arglist)
+(def transform-args (arglist)
   (defvar last undefined
           args (list))
   (each (arg) arglist
@@ -174,14 +174,14 @@
   args)
 
 
-(defun macros.reverse (arr)
+(def macros.reverse (arr)
   (defvar reversed (list))
   (each (item) arr (reversed.unshift item))
   reversed)
 
 (defvar reverse macros.reverse)
 
-(defun build-args-string (args rest)
+(def build-args-string (args rest)
   (defvar args-string ""
           optional-count 0)
 
@@ -216,7 +216,7 @@
 	      args.length ");\n")
     args-string))
 
-(defun build-comment-string (args)
+(def build-comment-string (args)
   (if (empty? args) ""
     (concat "// "
 	    (join " "
@@ -225,7 +225,7 @@
 			 (concat (translate (second arg)) ":" (first arg))))))))
 
 ;; brain 'splode
-(defun macros.lambda (arglist &rest body)
+(def macros.lambda (arglist &rest body)
   (defvar args (transform-args arglist)
     rest (first (select args
 			(lambda (arg)
@@ -255,13 +255,13 @@
 	  "})"))
 
 
-(defun macros.quote (item)
+(def macros.quote (item)
   (if (= "Array" item.constructor.name)
       (concat "[ " (join ", " (map item macros.quote)) " ]")
     (if (= 'number (typeof item)) item
       (concat "\"" (literal item) "\""))))
 
-(defun macros.hash (&rest pairs)
+(def macros.hash (&rest pairs)
   (when (odd? pairs.length)
     (error (concat
 	    "odd number of key-value pairs in hash: "
@@ -275,7 +275,7 @@
     (concat "{" (indent (join ",\n" pair-strings)) "}")))
 
 
-(defun literal (string)
+(def literal (string)
   (inject (chain string
 		 (replace /\*/g "_")
 		 (replace /\?$/ "__QUERY")
@@ -286,7 +286,7 @@
 		  (send (second match) to-upper-case)))))
 
 
-(defun translate (token hint)
+(def translate (token hint)
   (defvar hint hint)
   (when (and hint (undefined? (get macros hint)))
     (setf hint undefined))
@@ -312,7 +312,7 @@
 
 (set sibilant 'translate translate)
 
-(defun translate-all (contents)
+(def translate-all (contents)
   (defvar buffer "")
   (each (token) (tokenize contents)
 	(defvar line (translate token "statement"))

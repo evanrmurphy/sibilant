@@ -2,31 +2,31 @@
 
 (import (require "sibilant/functional"))
 
-(defun extract-options (config &optional args)
+(def extract-options (config &optional args)
   (defvar args (or args (process.argv.slice 2))
     default-label 'unlabeled
     current-label default-label
     config (or config (hash))
     unlabeled (list))
 
-  (defun label? (item) (and (string? item) (send /^-/ test item)))
+  (def label? (item) (and (string? item) (send /^-/ test item)))
 
-  (defun synonym-lookup (item)
+  (def synonym-lookup (item)
     (defvar config-entry (get config item))
     (if (string? config-entry)
 	(synonym-lookup config-entry)
       item))
 
-  (defun takes-args? (item)
+  (def takes-args? (item)
     (!= false (get config (label-for item))))
 
   (setf default-label (synonym-lookup default-label)
 	current-label default-label)
 
-  (defun label-for (item)
+  (def label-for (item)
     (synonym-lookup (item.replace /^-+/ "")))
 
-  (defun add-value (hash key value)
+  (def add-value (hash key value)
     (defvar current-value (get hash key))
     (when (undefined? current-value)
       (setf current-value (list))
@@ -34,7 +34,7 @@
     (when (!= true value)
       (current-value.push value)))
 
-  (defun reset-label ()
+  (def reset-label ()
     (setf current-label default-label))
 
   (inject (hash) args
@@ -49,10 +49,10 @@
 		(reset-label)))
 	    return-hash)))
 
-(defun process-options (&optional config)
+(def process-options (&optional config)
   (defvar options (extract-options config))
   (when config
-    (defun handle-pair (key value)
+    (def handle-pair (key value)
        (defvar handle (get config key))
        (when (string? handle) (handle-pair handle value))
        (when (function? handle) (apply handle value)))

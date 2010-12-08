@@ -1,6 +1,6 @@
 (defvar functional exports)
 
-(defun bulk-map (arr fn)
+(def bulk-map (arr fn)
   (defvar index 0
     group-size fn.length
     ret-arr (list))
@@ -12,27 +12,27 @@
     (incr-by index group-size))
   ret-arr)
 
-(defun inject (start items fn)
+(def inject (start items fn)
   (defvar value start)
   (when (array? items)
       (each (item index) items
 	    (setf value (fn value item index))))
   value)
 
-(defun map (items fn)
+(def map (items fn)
   (inject (list) items
 	  (lambda (collector item index)
 	    (send collector push (fn item index))
 	    collector)))
 
-(defun select (items fn)
+(def select (items fn)
   (inject (list) items
 	  (lambda (collector item index)
 	    (when (fn item index)
 	      (send collector push item))
 	    collector)))
 
-(defun detect (items fn)
+(def detect (items fn)
   (defvar return-item undefined
     index 0
     items items)
@@ -42,11 +42,11 @@
       (setf return-item (get items index)))
     (incr index)))
 
-(defun reject (items fn)
+(def reject (items fn)
   (defvar args (list items fn))
   (select items (lambda () (not (apply fn args)))))
 
-(defun compact (arr)
+(def compact (arr)
   (select arr (lambda (item) (as-boolean item))))
 
 (each (export-function)
