@@ -6,7 +6,7 @@
 
 
 ($ (thunk
-    (defvar $window ($ window))
+    (var $window ($ window))
 
     (def check-hash ()
       (when (defined? check-hash.timeout)
@@ -21,22 +21,22 @@
 
       (setf check-hash.timeout (set-timeout check-hash 500)))
     
-    (defvar items ($ "script[language=sibilant/example]"))
+    (var items ($ "script[language=sibilant/example]"))
 
     ($window.click (thunk (set-timeout check-hash 25)))
 
     ($window.bind 'hash-change
                   (lambda (evt hash)
-                    (defvar item (send items filter hash))
+                    (var item (send items filter hash))
                     (when (< 0 item.length)
-                      (defvar content (chain item
+                      (var content (chain item
                                              (text)
                                              (replace "<![CDATA[\n", "")
                                              (replace "]]>" "")))
-                      (defvar title (send item attr "data-title"))
+                      (var title (send item attr "data-title"))
                       (send ($ "header h2") html title)
-                      (defvar next (send item next items.selector))
-                      (defvar prev (send item prev items.selector))
+                      (var next (send item next items.selector))
+                      (var prev (send item prev items.selector))
                       
                       (if (> next.length 0)
                           (chain ($ "#next")
@@ -60,12 +60,12 @@
              (setf window.location.hash
                    (chain items (first) (attr 'id)))))
 
-    (defvar textarea ($ 'textarea))
+    (var textarea ($ 'textarea))
 
     (chain textarea
 	   (focus)
 	   (keyup (lambda (evt)
-                    (defvar output ($ "#output"))
+                    (var output ($ "#output"))
 		    (try (chain output
 				(text (sibilant.translate-all (textarea.val)))
 				(remove-class 'error))

@@ -18,10 +18,10 @@
                               sibilant.tokens.literal))
 
 
-(defvar tokenize
+(var tokenize
   (setf sibilant.tokenize
 	(lambda (string)
-	  (defvar tokens (list)
+	  (var tokens (list)
 	    parse-stack (list tokens)
 	    specials (list))
 
@@ -29,7 +29,7 @@
 	    (send (get parse-stack 0) push token))
 
 	  (def increase-nesting ()
-	    (defvar new-arr (list))
+	    (var new-arr (list))
 	    (accept-token new-arr)
 	    (parse-stack.unshift new-arr))
 
@@ -41,7 +41,7 @@
 			     (call inspect parse-stack)))))
 
 	  (def handle-token (token)
-	    (defvar special (first token)
+	    (var special (first token)
 	      token token)
 	    (if (= special "'")
 		(progn
@@ -59,7 +59,7 @@
 		(when (specials.shift)
 		  (decrease-nesting)))))
 
-          (defvar ordered-regexen (map sibilant.token-precedence
+          (var ordered-regexen (map sibilant.token-precedence
                                        (lambda (x) (get sibilant.tokens x)))
             master-regex (regex (join "|" ordered-regexen) 'g))
 
@@ -88,18 +88,18 @@
 	    (set object (first item) (get object (second item)))
 	    object)))
 
-(defvar macros (hash))
+(var macros (hash))
 (set sibilant 'macros macros)
 
 (set macros 'return
      (lambda (token)
-       (defvar default-return (concat "return " (translate token)))
+       (var default-return (concat "return " (translate token)))
        
        (if (array? token)
 	   (switch (first token)
 		   ('(return throw progn) (translate token))
                    ('delete
-                    (defvar delete-macro (get macros 'delete))
+                    (var delete-macro (get macros 'delete))
                     (if (< token.length 3) default-return
                       (concat (apply delete-macro (token.slice 1 -1))
                               "\nreturn "
@@ -113,7 +113,7 @@
 		   ('set
 		    (if (< token.length 5) default-return
 		      (progn
-			(defvar obj (second token)
+			(var obj (second token)
 			  non-return-part (token.slice 2 (- token.length 2))
 			  return-part (token.slice -2))
 			(non-return-part.unshift obj)
@@ -129,7 +129,7 @@
   (concat (apply macros.call args) ";\n"))
 
 (def macros.progn (&rest body)
-  (defvar last-index (-math.max 0 (- body.length 1)))
+  (var last-index (-math.max 0 (- body.length 1)))
 
   (set body last-index (list 'return (get body last-index)))
 
@@ -142,14 +142,14 @@
 	  "(" (join ", " (map args translate)) ")"))
 
 (def macros.def (fn-name &rest args-and-body)
-  (defvar fn-name-tr (translate fn-name)
+  (var fn-name-tr (translate fn-name)
     start (if (/\./ fn-name-tr) "" "var "))
   (concat start fn-name-tr " = "
 	  (apply macros.lambda args-and-body)
 	  ";\n"))
 
 (def macros.defmacro (name &rest args-and-body)
-  (defvar js (apply macros.lambda args-and-body)
+  (var js (apply macros.lambda args-and-body)
     name (translate name))
   (try (set macros name (eval js))
        (error (concat "error in parsing macro "
@@ -160,7 +160,7 @@
   (concat "(" (join " + " (map args translate)) ")"))
 
 (def transform-args (arglist)
-  (defvar last undefined
+  (var last undefined
           args (list))
   (each (arg) arglist
 	(if (= (first arg) "&") (setf last (arg.slice 1))
@@ -175,14 +175,14 @@
 
 
 (def macros.reverse (arr)
-  (defvar reversed (list))
+  (var reversed (list))
   (each (item) arr (reversed.unshift item))
   reversed)
 
-(defvar reverse macros.reverse)
+(var reverse macros.reverse)
 
 (def build-args-string (args rest)
-  (defvar args-string ""
+  (var args-string ""
           optional-count 0)
 
   (each (arg option-index) args
@@ -226,7 +226,7 @@
 
 ;; brain 'splode
 (def macros.lambda (arglist &rest body)
-  (defvar args (transform-args arglist)
+  (var args (transform-args arglist)
     rest (first (select args
 			(lambda (arg)
 			  (= 'rest (first arg)))))
@@ -240,7 +240,7 @@
     (setf doc-string
 	  (concat "/* " (eval (body.shift)) " */\n")))
 
-  (defvar no-rest-args (if rest (args.slice 0 -1) args)
+  (var no-rest-args (if rest (args.slice 0 -1) args)
     args-string (build-args-string no-rest-args rest)
     comment-string (build-comment-string args))
 
@@ -266,7 +266,7 @@
     (error (concat
 	    "odd number of key-value pairs in hash: "
 	    (call inspect pairs))))
-  (defvar pair-strings
+  (var pair-strings
     (bulk-map pairs (lambda (key value)
 		      (concat (translate key) ": "
 			      (translate value)))))
@@ -287,7 +287,7 @@
 
 
 (def translate (token hint)
-  (defvar hint hint)
+  (var hint hint)
   (when (and hint (undefined? (get macros hint)))
     (setf hint undefined))
 
@@ -313,9 +313,9 @@
 (set sibilant 'translate translate)
 
 (def translate-all (contents)
-  (defvar buffer "")
+  (var buffer "")
   (each (token) (tokenize contents)
-	(defvar line (translate token "statement"))
+	(var line (translate token "statement"))
 	(when line (setf buffer (concat buffer line "\n"))))
   buffer)
 

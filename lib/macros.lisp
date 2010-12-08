@@ -130,7 +130,7 @@
    "})()"))
 
 
-(defmacro defvar (&rest pairs)
+(defmacro var (&rest pairs)
   (concat "var "
 	  (join ",\n    "
 		(bulk-map pairs
@@ -140,7 +140,7 @@
 	  ";"))
 
 (defmacro = (first-thing &rest other-things)
-  (defvar translated-first-thing (translate first-thing))
+  (var translated-first-thing (translate first-thing))
   (concat "("
           (join " &&\n "
                 (map other-things
@@ -155,7 +155,7 @@
   (concat "typeof(" (translate thing) ") === \"string\""))
 
 (defmacro array? (thing)
-  (defvar translated (concat "(" (translate thing) ")"))
+  (var translated (concat "(" (translate thing) ")"))
   (concat translated " && "
 	  translated ".constructor.name === \"Array\""))
 
@@ -206,7 +206,7 @@
 	  "]"))
 
 (defmacro macroexpand (name)
-  (defvar macro (get macros (translate name)))
+  (var macro (get macros (translate name)))
   (if macro
       (concat "// macro: " name "\n" (send macro to-string))
     "undefined"))
@@ -224,8 +224,8 @@
 	  (indent (join "\n"
 		(map calls
 		     (lambda (call, index)
-		       (defvar method (first call))
-		       (defvar args (rest call))
+		       (var method (first call))
+		       (var args (rest call))
 		       (concat "." (translate method)
 			       "(" (join ", " (map args translate)) ")")))))))
 
@@ -243,7 +243,7 @@
 
 (defmacro while (condition &rest block)
   (macros.scoped
-   (macros.defvar '**return-value**)
+   (macros.var '**return-value**)
    (concat "while (" (translate condition) ") {"
            (indent (macros.setf '**return-value**
                                 (apply macros.scoped block))))
@@ -251,7 +251,7 @@
    '**return-value**))
 
 (defmacro until (condition &rest block)
-  (defvar condition (list 'not condition))
+  (var condition (list 'not condition))
   (send block unshift condition)
   (apply (get macros 'while) block))
 
@@ -271,7 +271,7 @@
   (delete (get macros (translate macro-name))) "")
 
 (defmacro defhash (name &rest pairs)
-  (macros.defvar name (apply macros.hash pairs)))
+  (macros.var name (apply macros.hash pairs)))
 
 (defmacro arguments ()
   "(Array.prototype.slice.apply(arguments))")
@@ -294,17 +294,17 @@
 
   ;; the complexity of this macro indicates there's a problem
   ;; I'm not quite sure where to fix this, but it has to do with quoting.
-  (defvar lines (list (concat "switch(" (translate obj) ") {")))
+  (var lines (list (concat "switch(" (translate obj) ") {")))
   (each (case-def) cases
-	(defvar case-name (first case-def))
+	(var case-name (first case-def))
 	(when (and (array? case-name)
 		   (= (first case-name) 'quote))
-	  (defvar second (second case-name))
+	  (var second (second case-name))
 	  (setf case-name (if (array? second)
 			      (map second macros.quote)
 			    (macros.quote second))))
 	
-	(defvar case-string
+	(var case-string
 	  (if (array? case-name)
 	      (join "\n" (map case-name (lambda (c)
 					  (concat "case " (translate c) ":"))))

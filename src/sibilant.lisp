@@ -1,4 +1,4 @@
-(defvar sibilant exports
+(var sibilant exports
         sys      (require 'sys)
         import   (require "sibilant/import")
         error    (lambda (str) (throw str))
@@ -9,7 +9,7 @@
 (include (concat **dirname "/../src/core.lisp"))
 
 (def include (file)
-  (defvar fs (require 'fs)
+  (var fs (require 'fs)
     data (fs.read-file-sync file 'utf8))
   (translate-all data))
 
@@ -19,12 +19,12 @@
   (sibilant.include (eval (translate file))))
 
 (def sibilant.package-info ()
-  (defvar fs (require 'fs)
+  (var fs (require 'fs)
     json (meta "JSON"))
   (json.parse (fs.read-file-sync (concat **dirname "/../package.json"))))
 
 (def sibilant.version-string ()
-  (defvar package (sibilant.package-info)
+  (var package (sibilant.package-info)
     path (require 'path))
   (concat package.name " version " package.version
 		       "\n(at " (path.join **dirname "..") ")"))

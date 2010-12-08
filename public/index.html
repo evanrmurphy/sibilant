@@ -172,15 +172,15 @@ $jquery
 	language="sibilant/example"
 	data-title="Defining Variables">
 <![CDATA[
-; Define a variable with the defvar
+; Define a variable with the var
 ; macro. This translates directly
 ; to the var keyword in javascript.
 
-(defvar foo 35)
-(defvar wibble "test")
-(defvar bar '(multi word array))
+(var foo 35)
+(var wibble "test")
+(var bar '(multi word array))
 
-(defvar var1 val1
+(var var1 val1
         var2 val2)
 
 ; To modify an existing variable,
@@ -198,11 +198,11 @@ $jquery
 	data-title="Defining Functions">
 <![CDATA[
 (def alert-hello (planet-name)
-  (defvar message (concat "hello " planet-name))
+  (var message (concat "hello " planet-name))
   (alert message)
   message)
 
-(defvar my-message (alert-hello 'world))
+(var my-message (alert-hello 'world))
 ; my-message is now "hello world"
 ]]>
 </script>
@@ -249,7 +249,7 @@ $jquery
 ; This example uses Node's async
 ; readfile
 
-(defvar fs (require 'fs))
+(var fs (require 'fs))
 
 (fs.read-file "path/to/file"
   (lambda (error content)
@@ -267,7 +267,7 @@ $jquery
 ; `when` will return the value of the
 ; last statement
 
-(defvar this-will-be-true (when (= 5 (+ 3 2))
+(var this-will-be-true (when (= 5 (+ 3 2))
   (alert "we've got a five")
   (post-to-twitter "three and two is five")
   true))
@@ -278,13 +278,13 @@ $jquery
 	language="sibilant/example">
 <![CDATA[
 ; `if` is like `when` with an "else."
-(defvar a-or-b (if (< 0.5 (-math.random)) 'a 'b))
+(var a-or-b (if (< 0.5 (-math.random)) 'a 'b))
 
 ; Unlike when, cases may only be a single
 ; statement. Use progn to execute several
 ; statements.
 
-(defvar a-or-b
+(var a-or-b
   (if (< 0.5 (-math.random))
     (progn
       (log "random was more than 0.5")
@@ -302,7 +302,7 @@ $jquery
 ; Switch allows you to check a variable
 ; against any number of possible values.
 
-(defvar comment (switch month-name
+(var comment (switch month-name
   ('january
     (increment year)
     "happy new year!")
@@ -328,7 +328,7 @@ $jquery
 ; To iterate over an array, use the each
 ; macro.
 
-(defvar list '(a b c d e))
+(var list '(a b c d e))
 (each (letter) list
   (when (= "C" (letter.to-upper-case))
     (console.log "this was a c"))
@@ -341,14 +341,14 @@ $jquery
 	data-title="While"
 	language="sibilant/example">
 <![CDATA[
-(defvar wall-bottle-count 99)
+(var wall-bottle-count 99)
 
 (def take-one-down ()
   (decr wall-bottle-count)
   the-bottle)
 
 (while (> wall-bottle-count 0)
-  (defvar bottle (take-one-down))
+  (var bottle (take-one-down))
   (each (person) room
     (while (not (empty? bottle))
       (sip bottle))))
@@ -388,7 +388,7 @@ The real power of sibilant is the ability
 to define (and redefine) macros, extending
 the language.  All constructs can be
 redefined. This includes core language
-features like +, lambda, if, def, defvar,
+features like +, lambda, if, def, var,
 and even defmacro itself.
 
 Defining macros is as easy as defining

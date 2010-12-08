@@ -100,7 +100,7 @@ h4. Lists
 
 h3. Defining a variable
 
-<pre><code>(defvar foo "foo now has this value")</code></pre>
+<pre><code>(var foo "foo now has this value")</code></pre>
 
 h3. Hashes
 
@@ -111,7 +111,7 @@ h3. Calling functions
 
 Let's say we're in node and want to use the built-in function @require@.
 
-<pre><code>(defvar sys (require 'sys)) ;=> var sys = require("sys")</code></pre>
+<pre><code>(var sys (require 'sys)) ;=> var sys = require("sys")</code></pre>
 
 h3. Defining functions
 
@@ -156,7 +156,7 @@ h3. Lambdas
 
 Lambdas are defined just like functions (with @&rest@ and @&optional@ args, if you so desire), but with the lambda keyword.
 
-In fact, @(def name (args) body)@ is functionally equivalent to @(defvar name (lambda (args) body))@.
+In fact, @(def name (args) body)@ is functionally equivalent to @(var name (lambda (args) body))@.
 
 h2. Control flow
 
