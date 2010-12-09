@@ -33,7 +33,7 @@
 	 flushed true)
 
        (try
-	(progn
+	(do
 	  (setf cmd-buffer (concat cmd-buffer cmd))
 	  (each (stmt) (sibilant.tokenize cmd-buffer)
 		(setf js-line (concat js-line
@@ -46,11 +46,11 @@
 					(sys.inspect result) "\n"))))
 	  (set context "_" result)
 	  (setf cmd-buffer ""))
-	(progn
+	(do
 	  (if (e.message.match "unexpected EOF")
-	      (progn (setf cmd-buffer (concat cmd-buffer " "))
+	      (do (setf cmd-buffer (concat cmd-buffer " "))
 		     (readline.history.shift))
-	    (progn (set readline.history 0 cmd-buffer)
+	    (do (set readline.history 0 cmd-buffer)
 		   (setf flushed (stream.write e.message)
 			 cmd-buffer "")))))
        

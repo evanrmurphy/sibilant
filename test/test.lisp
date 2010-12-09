@@ -11,8 +11,8 @@
   (send string trim))
 
 (def assert-equal (expected actual &optional message)
-  (sys.print (if (= expected actual) (progn (incr passes) ".")
-               (progn (incr fails)
+  (sys.print (if (= expected actual) (do (incr passes) ".")
+               (do (incr fails)
                       (concat "F\n\n" (if message (concat message "\n\n") "") "expected "expected 
                               "\n\nbut got " actual "\n\n")))))
 
@@ -108,9 +108,9 @@
   };
 })()")
 
-; progn
+; do
 
-(assert-translation "(progn a b c d e)"
+(assert-translation "(do a b c d e)"
     "a;\nb;\nc;\nd;\nreturn e;")
 
 
@@ -337,10 +337,10 @@ afterInclude2();")
  (assert-equal "stopped at iteration: 10" return-string))
 
 (assert-translation
- "(return (progn (return a)))" "return a;")
+ "(return (do (return a)))" "return a;")
 
 (assert-translation
- "(return (progn (switch a (b c))))"
+ "(return (do (switch a (b c))))"
 
 "return (function() {
   switch(a) {
@@ -353,7 +353,7 @@ afterInclude2();")
 (a === b &&
  a === c)")
 
-(assert-translation "(progn)" "return undefined;")
+(assert-translation "(do)" "return undefined;")
 
 (console.log (concat "\n\n"  (+ passes fails) " total tests, "
                      passes " passed, " fails " failed"))

@@ -281,15 +281,15 @@ $jquery
 (var a-or-b (if (< 0.5 (-math.random)) 'a 'b))
 
 ; Unlike when, cases may only be a single
-; statement. Use progn to execute several
+; statement. Use do to execute several
 ; statements.
 
 (var a-or-b
   (if (< 0.5 (-math.random))
-    (progn
+    (do
       (log "random was more than 0.5")
       'a)
-    (progn
+    (do
       (log "random was less than 0.5")
       'b)))
 ]]>

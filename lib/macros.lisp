@@ -123,9 +123,9 @@
    "(function() {"
    (indent (concat
 	    "if (" (translate arg) ") {"
-	    (indent (macros.progn truebody))
+	    (indent (macros.do truebody))
 	    "} else {"
-	    (indent (macros.progn falsebody))
+	    (indent (macros.do falsebody))
 	    "};"))
    "})()"))
 
@@ -165,7 +165,7 @@
    "(function() {"
    (indent (concat
 	    "if (" (translate arg) ") {"
-	    (indent (apply macros.progn body))
+	    (indent (apply macros.do body))
 	    "};"))
    "})()"))
 
@@ -234,9 +234,9 @@
    "(function() {"
    (indent (concat
 	    "try {"
-	    (indent (macros.progn tryblock))
+	    (indent (macros.do tryblock))
 	    "} catch (e) {"
-	    (indent (macros.progn catchblock))
+	    (indent (macros.do catchblock))
 	    "}"))
    "})()"))
 
@@ -312,7 +312,7 @@
 	      (concat "case " (translate case-name) ":"))))
 	
 	(lines.push (concat case-string
-			    (indent (apply macros.progn (case-def.slice 1))))))
+			    (indent (apply macros.do (case-def.slice 1))))))
 
   ; the following two lines are to get the whitespace right
   ; this is necessary because switches are indented weird

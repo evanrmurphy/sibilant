@@ -40,11 +40,11 @@
   (inject (hash) args
 	  (lambda (return-hash item index)
 	    (if (label? item)
-		(progn
+		(do
 		  (setf current-label (label-for item))
 		  (add-value return-hash current-label true)
 		  (when (not (takes-args? item)) (reset-label)))
-	      (progn
+	      (do
 		(add-value return-hash current-label item)
 		(reset-label)))
 	    return-hash)))

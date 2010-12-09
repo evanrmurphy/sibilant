@@ -44,14 +44,14 @@
 	    (var special (first token)
 	      token token)
 	    (if (= special "'")
-		(progn
+		(do
 		  (setf token (token.slice 1))
 		  (increase-nesting)
 		  (accept-token 'quote))
 	      (setf special false))
 	    (specials.unshift (as-boolean special))
 	    (if (= token "(") (increase-nesting)
-	      (progn
+	      (do
 		(if (= token ")") (decrease-nesting)
 		  (if (token.match /^-?[0-9.]+$/)
 		      (accept-token (parse-float token))
@@ -97,7 +97,7 @@
        
        (if (array? token)
 	   (switch (first token)
-		   ('(return throw progn) (translate token))
+		   ('(return throw do) (translate token))
                    ('delete
                     (var delete-macro (get macros 'delete))
                     (if (< token.length 3) default-return
@@ -112,7 +112,7 @@
 			      (apply macros.setf (token.slice -2)))))
 		   ('set
 		    (if (< token.length 5) default-return
-		      (progn
+		      (do
 			(var obj (second token)
 			  non-return-part (token.slice 2 (- token.length 2))
 			  return-part (token.slice -2))
@@ -128,7 +128,7 @@
 (def macros.statement (&rest args)
   (concat (apply macros.call args) ";\n"))
 
-(def macros.progn (&rest body)
+(def macros.do (&rest body)
   (var last-index (-math.max 0 (- body.length 1)))
 
   (set body last-index (list 'return (get body last-index)))
@@ -164,7 +164,7 @@
           args (list))
   (each (arg) arglist
 	(if (= (first arg) "&") (setf last (arg.slice 1))
-	  (progn
+	  (do
 	    (args.push (list (or last 'required) arg))
 	    (setf last null))))
 

@@ -37,7 +37,7 @@
 
 (def cli.eval (&rest args)
   (if (empty? args)
-      (progn
+      (do
 	(var stdin (process.open-stdin)
 	  data "")
 
@@ -123,7 +123,7 @@ $ sibilant --repl
 	translated (sibilant.translate-file input-path))
 
       (if output-dir
-	  (progn
+	  (do
 	    (var
 	      input-basename (path.basename input-path ".lisp")
 	      output-path (concat (path.join output-dir input-basename) ".js"))

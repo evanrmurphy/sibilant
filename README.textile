@@ -166,12 +166,12 @@ h3. If
 
 <pre><code>(if (= 2 (+ 1 1)) 'yes 'no) ;=> the return value of this will be "yes"
 
-; for multi-statement blocks, use progn:
+; for multi-statement blocks, use do:
 (if (defined? foo)
-    (progn
+    (do
      (call-your-mom)
      (say 'hi))
-  (progn
+  (do
     (complain "bad at examples")
     (42)))
 
@@ -182,7 +182,7 @@ h3. If
 
 h3. When
 
-@when@ is like the true branch of @if@, but doesn't require @progn@ for multi-statement blocks.
+@when@ is like the true branch of @if@, but doesn't require @do@ for multi-statement blocks.
 
 <pre><code>(when (<= 2 rainbow-count)
   (puts "oh my god, double rainbow")
