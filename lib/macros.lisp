@@ -137,12 +137,14 @@
 
 
 (mac var (&rest pairs)
-  (concat "var "
-	  (join ",\n    "
-		(bulk-map pairs
-			  (lambda (name value)
-			    (concat (translate name) " = "
-				    (translate value)))))
+  (concat
+    "var "
+    (join
+      ",\n    "
+      (bulk-map
+        pairs
+        (lambda (name value)
+          (concat (translate name) " = " (translate value)))))
 	  ";"))
 
 (mac == (first-thing &rest other-things)
