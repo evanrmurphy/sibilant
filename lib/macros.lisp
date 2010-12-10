@@ -39,7 +39,7 @@
 (mac += (item increment)
   (concat (translate item) " += " (translate increment)))
 
-(mac incr (item)
+(mac ++ (item)
   (concat "((" (translate item) ")++)"))
 
 (mac decr (item)

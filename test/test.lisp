@@ -12,8 +12,8 @@
 
 (def assert-equal (expected actual &optional message)
   (sys.print (if (== expected actual)
-                  (do (incr passes) ".")
-                 (do (incr fails)
+                  (do (++ passes) ".")
+                 (do (++ fails)
                      (concat "F\n\n" (+ passes fails) ": "
                              (if message
                                   (concat message "\n\n")
@@ -64,7 +64,7 @@
 (assert-translation "(regex \"regex\" 'g)" "(new RegExp(\"regex\", \"g\"))")
 
 (assert-translation "(pow a b)" "Math.pow(a, b)")
-(assert-translation "(incr x)"  "((x)++)")
+(assert-translation "(++ x)"  "((x)++)")
 (assert-translation "(decr x)"  "((x)--)")
 
 (assert-translation "'hello"        "\"hello\"")

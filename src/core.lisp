@@ -219,7 +219,7 @@
 		    (concat (concat (translate (second arg)) " = undefined"))
 		    (join ", "))
 		   ";"))))
-	(incr optional-count)))
+	(++ optional-count)))
 
   (if (defined? rest)
       (concat args-string

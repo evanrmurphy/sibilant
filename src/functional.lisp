@@ -40,7 +40,7 @@
   (until (or (== items.length index) return-item)
     (when (fn (get items index) index)
       (assign return-item (get items index)))
-    (incr index)))
+    (++ index)))
 
 (def reject (items fn)
   (def args [ items fn ])
