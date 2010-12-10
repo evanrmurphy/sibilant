@@ -9,7 +9,7 @@
     (send ret-arr push
 	  (apply fn (send arr slice
 			  index (+ index group-size))))
-    (incr-by index group-size))
+    (+= index group-size))
   ret-arr)
 
 (def inject (start items fn)

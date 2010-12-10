@@ -36,7 +36,7 @@
 (mac pow (base exponent)
   (macros.call "Math.pow" base exponent))
 
-(mac incr-by (item increment)
+(mac += (item increment)
   (concat (translate item) " += " (translate increment)))
 
 (mac incr (item)
