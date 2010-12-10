@@ -310,7 +310,7 @@ afterInclude2();")
 
 
 (assert-translation
- "(defmacro foo? () 1) (foo?) (delmacro foo?) (foo?)"
+ "(mac foo? () 1) (foo?) (delmacro foo?) (foo?)"
  "1\nfoo__QUERY();")
 
 (assert-translation

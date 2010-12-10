@@ -148,7 +148,7 @@
 	  (apply macros.lambda args-and-body)
 	  ";\n"))
 
-(def macros.defmacro (name &rest args-and-body)
+(def macros.mac (name &rest args-and-body)
   (var js (apply macros.lambda args-and-body)
     name (translate name))
   (try (set macros name (eval js))

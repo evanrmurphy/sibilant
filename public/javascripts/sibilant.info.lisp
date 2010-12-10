@@ -1,7 +1,7 @@
-(defmacro trim (item)
+(mac trim (item)
   (macros.send item 'replace "/^\\s*|\\s*$/g" "\"\""))
 
-(defmacro contains? (item arr)
+(mac contains? (item arr)
   ((get macros "!=") -1 (macros.send (translate arr) 'index-of item)))
 
 

@@ -389,7 +389,7 @@ to define (and redefine) macros, extending
 the language.  All constructs can be
 redefined. This includes core language
 features like +, lambda, if, def, var,
-and even defmacro itself.
+and even mac itself.
 
 Defining macros is as easy as defining
 functions, but modify the interpreter
@@ -409,7 +409,7 @@ Most of sibilant is defined like this [1].
 add a ternary conditional macro to sibilant.
 Let's call it 'cond'."
 
-(defmacro cond (cond true-value false-value)
+(mac cond (cond true-value false-value)
   (concat (translate cond) " ? "
           (translate true-value) " : "
           (translate false-value) ";"))
@@ -434,7 +434,7 @@ Let's call it 'cond'."
 ; after the commas in a list if
 ; there are more than two items.
 
-(defmacro list (&rest args)
+(mac list (&rest args)
   (concat "["
     (if (> 3 args.length)
       (concat " "
