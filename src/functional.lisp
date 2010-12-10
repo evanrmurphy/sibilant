@@ -37,7 +37,7 @@
     index 0
     items items)
 
-  (until (or (= items.length index) return-item)
+  (until (or (== items.length index) return-item)
     (when (fn (get items index) index)
       (setf return-item (get items index)))
     (incr index)))

@@ -267,7 +267,7 @@ $jquery
 ; `when` will return the value of the
 ; last statement
 
-(var this-will-be-true (when (= 5 (+ 3 2))
+(var this-will-be-true (when (== 5 (+ 3 2))
   (alert "we've got a five")
   (post-to-twitter "three and two is five")
   true))
@@ -330,7 +330,7 @@ $jquery
 
 (var list '(a b c d e))
 (each (letter) list
-  (when (= "C" (letter.to-upper-case))
+  (when (== "C" (letter.to-upper-case))
     (console.log "this was a c"))
   (console.log letter))
 

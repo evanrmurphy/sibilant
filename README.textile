@@ -164,7 +164,7 @@ h3. If
 
 @if@ takes three arguments -- the condition that is checked, the true body, and the false body.  @if@ always has a return value, which is achieved by wrapping every @if@ statement in an anonymous self-calling function (in js).
 
-<pre><code>(if (= 2 (+ 1 1)) 'yes 'no) ;=> the return value of this will be "yes"
+<pre><code>(if (== 2 (+ 1 1)) 'yes 'no) ;=> the return value of this will be "yes"
 
 ; for multi-statement blocks, use do:
 (if (defined? foo)

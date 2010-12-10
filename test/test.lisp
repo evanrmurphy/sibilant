@@ -11,7 +11,7 @@
   (send string trim))
 
 (def assert-equal (expected actual &optional message)
-  (sys.print (if (= expected actual) (do (incr passes) ".")
+  (sys.print (if (== expected actual) (do (incr passes) ".")
                (do (incr fails)
                       (concat "F\n\n" (if message (concat message "\n\n") "") "expected "expected 
                               "\n\nbut got " actual "\n\n")))))
@@ -349,7 +349,7 @@ afterInclude2();")
   }
 })();")
 
-(assert-translation "(= a b c)" "
+(assert-translation "(== a b c)" "
 (a === b &&
  a === c)")
 

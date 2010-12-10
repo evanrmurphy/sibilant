@@ -43,16 +43,16 @@
 	  (def handle-token (token)
 	    (var special (first token)
 	      token token)
-	    (if (= special "'")
+	    (if (== special "'")
 		(do
 		  (setf token (token.slice 1))
 		  (increase-nesting)
 		  (accept-token 'quote))
 	      (setf special false))
 	    (specials.unshift (as-boolean special))
-	    (if (= token "(") (increase-nesting)
+	    (if (== token "(") (increase-nesting)
 	      (do
-		(if (= token ")") (decrease-nesting)
+		(if (== token ")") (decrease-nesting)
 		  (if (token.match /^-?[0-9.]+$/)
 		      (accept-token (parse-float token))
 		    (accept-token token)))
@@ -163,7 +163,7 @@
   (var last undefined
           args (list))
   (each (arg) arglist
-	(if (= (first arg) "&") (setf last (arg.slice 1))
+	(if (== (first arg) "&") (setf last (arg.slice 1))
 	  (do
 	    (args.push (list (or last 'required) arg))
 	    (setf last null))))
@@ -186,7 +186,7 @@
           optional-count 0)
 
   (each (arg option-index) args
-      (when (= (first arg) 'optional)
+      (when (== (first arg) 'optional)
 	(setf
 	 args-string
 	 (concat
@@ -229,13 +229,13 @@
   (var args (transform-args arglist)
     rest (first (select args
 			(lambda (arg)
-			  (= 'rest (first arg)))))
+			  (== 'rest (first arg)))))
     doc-string undefined)
 
   (set body (- body.length 1)
        (list 'return (get body (- body.length 1))))
 
-  (when (and (= (typeof (first body)) 'string)
+  (when (and (== (typeof (first body)) 'string)
 	     (send (first body) match /^".*"$/))
     (setf doc-string
 	  (concat "/* " (eval (body.shift)) " */\n")))
@@ -256,9 +256,9 @@
 
 
 (def macros.quote (item)
-  (if (= "Array" item.constructor.name)
+  (if (== "Array" item.constructor.name)
       (concat "[ " (join ", " (map item macros.quote)) " ]")
-    (if (= 'number (typeof item)) item
+    (if (== 'number (typeof item)) item
       (concat "\"" (literal item) "\""))))
 
 (def macros.hash (&rest pairs)
@@ -302,7 +302,7 @@
 	   (literal token)
 	 (if (and (string? token) (token.match (regex "^;")))
 	     (token.replace (regex "^;+") "//")
-	   (if (and (string? token) (= "\"" (first token) (last token)))
+	   (if (and (string? token) (== "\"" (first token) (last token)))
                (chain token (split "\n") (join "\\n\" +\n\""))
 	     token))))
      (error (concat e.stack "\n"

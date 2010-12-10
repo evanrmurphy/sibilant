@@ -73,7 +73,7 @@
   (macros.send fn 'apply 'undefined arglist))
 
 (mac zero? (item)
-  ((get macros "=") (translate item) 0))
+  ((get macros "==") (translate item) 0))
 
 (mac empty? (arr)
   (concat "((" (translate arr) ").length === 0)"))
@@ -83,7 +83,7 @@
    (macros.mod (translate number) 2)))
 
 (mac even? (number)
-  ((get macros "=") 0
+  ((get macros "==") 0
    (macros.mod (translate number) 2)))
 
 
@@ -139,7 +139,7 @@
 				    (translate value)))))
 	  ";"))
 
-(mac = (first-thing &rest other-things)
+(mac == (first-thing &rest other-things)
   (var translated-first-thing (translate first-thing))
   (concat "("
           (join " &&\n "
@@ -298,7 +298,7 @@
   (each (case-def) cases
 	(var case-name (first case-def))
 	(when (and (array? case-name)
-		   (= (first case-name) 'quote))
+		   (== (first case-name) 'quote))
 	  (var second (second case-name))
 	  (setf case-name (if (array? second)
 			      (map second macros.quote)
@@ -308,7 +308,7 @@
 	  (if (array? case-name)
 	      (join "\n" (map case-name (lambda (c)
 					  (concat "case " (translate c) ":"))))
-	    (if (= 'default case-name) "default:"
+	    (if (== 'default case-name) "default:"
 	      (concat "case " (translate case-name) ":"))))
 	
 	(lines.push (concat case-string
