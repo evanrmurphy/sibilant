@@ -42,7 +42,7 @@
 (mac ++ (item)
   (concat "((" (translate item) ")++)"))
 
-(mac decr (item)
+(mac dec (item)
   (concat "((" (translate item) ")--)"))
 
 (mac get (arr i) (concat "(" (translate arr) ")[" (translate i) "]"))

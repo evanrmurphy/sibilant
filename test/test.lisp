@@ -65,7 +65,7 @@
 
 (assert-translation "(pow a b)" "Math.pow(a, b)")
 (assert-translation "(++ x)"  "((x)++)")
-(assert-translation "(decr x)"  "((x)--)")
+(assert-translation "(dec x)"  "((x)--)")
 
 (assert-translation "'hello"        "\"hello\"")
 (assert-translation "(quote hello)" "\"hello\"")
