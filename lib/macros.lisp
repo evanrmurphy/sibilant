@@ -34,6 +34,7 @@
 (mac ++ (item)
   (concat "((" (translate item) ")++)"))
 
+; sibilant won't compile if you try and call this --
 (mac dec (item)
   (concat "((" (translate item) ")--)"))
 
