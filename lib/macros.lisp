@@ -205,7 +205,7 @@
 			     macros.quote)))
 	  "]"))
 
-(mac macroexpand (name)
+(mac macex (name)
   (var macro (get macros (translate name)))
   (if macro
       (concat "// macro: " name "\n" (send macro to-string))
