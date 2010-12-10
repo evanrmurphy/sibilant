@@ -15,7 +15,7 @@
   (each-key key global (set context key (get global key)))
   context)
 
-(setf context (create-context))
+(assign context (create-context))
 
 (stream.on 'data (lambda (data) (readline.write data)))
 
@@ -34,28 +34,28 @@
 
        (try
 	(do
-	  (setf cmd-buffer (concat cmd-buffer cmd))
+	  (assign cmd-buffer (concat cmd-buffer cmd))
 	  (each (stmt) (sibilant.tokenize cmd-buffer)
-		(setf js-line (concat js-line
+		(assign js-line (concat js-line
 				      (sibilant.translate stmt 'statement))))
 	  (var result (script.run-in-context js-line context "sibilant-repl"))
 	  (set readline.history 0 cmd-buffer)
 	  (when (defined? result)
-	    (setf flushed
+	    (assign flushed
 		  (stream.write (concat "result: "
 					(sys.inspect result) "\n"))))
 	  (set context "_" result)
-	  (setf cmd-buffer ""))
+	  (assign cmd-buffer ""))
 	(do
 	  (if (e.message.match "unexpected EOF")
-	      (do (setf cmd-buffer (concat cmd-buffer " "))
+	      (do (assign cmd-buffer (concat cmd-buffer " "))
 		     (readline.history.shift))
 	    (do (set readline.history 0 cmd-buffer)
-		   (setf flushed (stream.write e.message)
+		   (assign flushed (stream.write e.message)
 			 cmd-buffer "")))))
        
        (if flushed (display-prompt)
-	 (setf display-prompt-on-drain true))))
+	 (assign display-prompt-on-drain true))))
 
 (readline.on 'close stream.destroy)
 
@@ -63,7 +63,7 @@
     (lambda ()
       (when display-prompt-on-drain
 	(display-prompt)
-	(setf display-prompt-on-drain false))))
+	(assign display-prompt-on-drain false))))
 
 (display-prompt)
 

@@ -21,7 +21,7 @@
     (when (not (sibilant.load-next-script))
       (chain ($ "script[type=\"text/lisp\"]:not([src])")
         (each (thunk
-               (setf lisp (chain ($ this)
+               (assign lisp (chain ($ this)
                                  (text)
                                  (replace /(^\s*\/\/\<!\[CDATA\[)|(\/\/\]\]>\s*$)/g ""
                                   ))
@@ -30,7 +30,7 @@
                (chain ($ this) (data 'js js))
                (eval-with-try-catch js))))))
 
-  (setf scripts ($.make-array (chain
+  (assign scripts ($.make-array (chain
     ($ "script[type=\"text/lisp\"][src]") (map (thunk this.src)))))
 
   (def sibilant.load-next-script ()

@@ -189,7 +189,7 @@
 	(apply macros.lambda body)))
 
 
-(mac setf (&rest args)
+(mac assign (&rest args)
   (join "\n"
 	(bulk-map args (lambda (name value)
 			 (concat (translate name) " = "
@@ -245,7 +245,7 @@
   (macros.scoped
    (macros.var '**return-value**)
    (concat "while (" (translate condition) ") {"
-           (indent (macros.setf '**return-value**
+           (indent (macros.assign '**return-value**
                                 (apply macros.scoped block))))
    "}"
    '**return-value**))
@@ -300,7 +300,7 @@
 	(when (and (array? case-name)
 		   (== (first case-name) 'quote))
 	  (var second (second case-name))
-	  (setf case-name (if (array? second)
+	  (assign case-name (if (array? second)
 			      (map second macros.quote)
 			    (macros.quote second))))
 	

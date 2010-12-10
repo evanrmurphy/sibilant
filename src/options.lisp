@@ -20,7 +20,7 @@
   (def takes-args? (item)
     (!= false (get config (label-for item))))
 
-  (setf default-label (synonym-lookup default-label)
+  (assign default-label (synonym-lookup default-label)
 	current-label default-label)
 
   (def label-for (item)
@@ -29,19 +29,19 @@
   (def add-value (hash key value)
     (var current-value (get hash key))
     (when (undefined? current-value)
-      (setf current-value (list))
+      (assign current-value (list))
       (set hash key current-value))
     (when (!= true value)
       (current-value.push value)))
 
   (def reset-label ()
-    (setf current-label default-label))
+    (assign current-label default-label))
 
   (inject (hash) args
 	  (lambda (return-hash item index)
 	    (if (label? item)
 		(do
-		  (setf current-label (label-for item))
+		  (assign current-label (label-for item))
 		  (add-value return-hash current-label true)
 		  (when (not (takes-args? item)) (reset-label)))
 	      (do

@@ -19,7 +19,7 @@
 
 
 (var tokenize
-  (setf sibilant.tokenize
+  (assign sibilant.tokenize
 	(lambda (string)
 	  (var tokens (list)
 	    parse-stack (list tokens)
@@ -45,10 +45,10 @@
 	      token token)
 	    (if (== special "'")
 		(do
-		  (setf token (token.slice 1))
+		  (assign token (token.slice 1))
 		  (increase-nesting)
 		  (accept-token 'quote))
-	      (setf special false))
+	      (assign special false))
 	    (specials.unshift (as-boolean special))
 	    (if (== token "(") (increase-nesting)
 	      (do
@@ -104,12 +104,12 @@
                       (concat (apply delete-macro (token.slice 1 -1))
                               "\nreturn "
                               (delete-macro (last token)))))
-		   ('setf
+		   ('assign
 		    (if (< token.length 4) default-return
-		      (concat (apply macros.setf
+		      (concat (apply macros.assign
 				     (token.slice 1 (- token.length 2)))
 			      "\nreturn "
-			      (apply macros.setf (token.slice -2)))))
+			      (apply macros.assign (token.slice -2)))))
 		   ('set
 		    (if (< token.length 5) default-return
 		      (do
@@ -163,10 +163,10 @@
   (var last undefined
           args (list))
   (each (arg) arglist
-	(if (== (first arg) "&") (setf last (arg.slice 1))
+	(if (== (first arg) "&") (assign last (arg.slice 1))
 	  (do
 	    (args.push (list (or last 'required) arg))
-	    (setf last null))))
+	    (assign last null))))
 
   (when last
     (error (concat "unexpected argument modifier: " last)))
@@ -187,7 +187,7 @@
 
   (each (arg option-index) args
       (when (== (first arg) 'optional)
-	(setf
+	(assign
 	 args-string
 	 (concat
 	  args-string
@@ -237,7 +237,7 @@
 
   (when (and (== (typeof (first body)) 'string)
 	     (send (first body) match /^".*"$/))
-    (setf doc-string
+    (assign doc-string
 	  (concat "/* " (eval (body.shift)) " */\n")))
 
   (var no-rest-args (if rest (args.slice 0 -1) args)
@@ -289,10 +289,10 @@
 (def translate (token hint)
   (var hint hint)
   (when (and hint (undefined? (get macros hint)))
-    (setf hint undefined))
+    (assign hint undefined))
 
   (when (defined? token)
-    (when (string? token) (setf token (token.trim)))
+    (when (string? token) (assign token (token.trim)))
     (try
      (if (array? token)
 	 (if (defined? (get macros (translate (first token))))
@@ -316,7 +316,7 @@
   (var buffer "")
   (each (token) (tokenize contents)
 	(var line (translate token "statement"))
-	(when line (setf buffer (concat buffer line "\n"))))
+	(when line (assign buffer (concat buffer line "\n"))))
   buffer)
 
 (set sibilant 'translate-all translate-all)

@@ -19,7 +19,7 @@
           (data 'last-hash window.location.hash)
           (trigger 'hash-change window.location.hash)))
 
-      (setf check-hash.timeout (set-timeout check-hash 500)))
+      (assign check-hash.timeout (set-timeout check-hash 500)))
     
     (var items ($ "script[language=sibilant/example]"))
 
@@ -57,7 +57,7 @@
 
     (switch window.location.hash
             (("" "#")
-             (setf window.location.hash
+             (assign window.location.hash
                    (chain items (first) (attr 'id)))))
 
     (var textarea ($ 'textarea))
