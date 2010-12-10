@@ -7,28 +7,20 @@
 (mac list (&rest args)
   (concat "[ " (join ", " (map args translate)) " ]"))
 
-(mac +   (&rest args)
-  (concat "(" (join " + " (map args translate)) ")"))
-(mac -   (&rest args)
-  (concat "(" (join " - " (map args translate)) ")"))
-(mac *   (&rest args)
-  (concat "(" (join " * " (map args translate)) ")"))
+(mac +   (&rest args) (concat "(" (join " + " (map args translate)) ")"))
+(mac -   (&rest args) (concat "(" (join " - " (map args translate)) ")"))
+(mac *   (&rest args) (concat "(" (join " * " (map args translate)) ")"))
+(mac or  (&rest args) (concat "(" (join " || " (map args translate)) ")"))
+(mac and (&rest args) (concat "(" (join " && " (map args translate)) ")"))
+(mac >   (&rest args) (concat "(" (join " > " (map args translate)) ")"))
+(mac <   (&rest args) (concat "(" (join " < " (map args translate)) ")"))
+(mac <=  (&rest args) (concat "(" (join " <= " (map args translate)) ")"))
+(mac >=  (&rest args) (concat "(" (join " >= " (map args translate)) ")"))
+(mac !=  (&rest args) (concat "(" (join " !== " (map args translate)) ")"))
+
+; node won't let me define this simple macro on one line
 (mac /   (&rest args)
   (concat "(" (join " / " (map args translate)) ")"))
-(mac or  (&rest args)
-  (concat "(" (join " || " (map args translate)) ")"))
-(mac and (&rest args)
-  (concat "(" (join " && " (map args translate)) ")"))
-(mac >   (&rest args)
-  (concat "(" (join " > " (map args translate)) ")"))
-(mac <   (&rest args)
-  (concat "(" (join " < " (map args translate)) ")"))
-(mac <=  (&rest args)
-  (concat "(" (join " <= " (map args translate)) ")"))
-(mac >=  (&rest args)
-  (concat "(" (join " >= " (map args translate)) ")"))
-(mac !=  (&rest args)
-  (concat "(" (join " !== " (map args translate)) ")"))
 
 (mac mod (&rest args)
   (concat "(" (join " % " (map args translate)) ")"))
@@ -167,7 +159,6 @@
   (concat translated " && "
 	  translated ".constructor.name === \"Array\""))
 
-
 (mac when (arg &rest body)
   (concat
    "(function() {"
@@ -176,8 +167,6 @@
 	    (indent (apply macros.do body))
 	    "};"))
    "})()"))
-
-
 
 (mac not (exp)
   (concat "(!" (translate exp) ")"))
@@ -194,7 +183,6 @@
 (mac each (item array &rest body)
   (macros.send (translate array) 'for-each
 	(apply macros.lambda (cons item body))))
-
 
 (mac assign (&rest args)
   (join "\n"
@@ -243,7 +231,6 @@
 	    (indent (macros.do catchblock))
 	    "}"))
    "})()"))
-
 
 (mac while (condition &rest block)
   (macros.scoped
