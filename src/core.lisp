@@ -1,35 +1,36 @@
-(set sibilant
-     'tokens (hash regex             "(\\/(\\\\\\\/|[^\\/\\n])+\\/[glim]*)"
-                  comment            "(;.*)"
-                  string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
-                  number             "(-?[0-9.]+)"
-                  literal            "([*.$a-z-][*.a-z0-9-]*(\\?|!)?)"
-                  special            "([&']?)"
-                  other-char         "([><=!\\+\\/\\*-]+)"
-                  open-paren         "(\\()"
-                  special-open-paren "('?\\()"
-                  close-paren        "(\\))")
-
-     'token-precedence '( regex comment string number special-literal other-char
-                          special-open-paren close-paren))
+(set sibilant 'tokens {})
 
 (set sibilant.tokens
-     'special-literal (concat sibilant.tokens.special
-                              sibilant.tokens.literal))
+     'regex              "(\\/(\\\\\\\/|[^\\/\\n])+\\/[glim]*)"
+     'comment            "(;.*)"
+     'string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
+     'number             "(-?[0-9.]+)"
+     'literal            "([*.$a-zA-Z-][*.a-zA-Z0-9-]*(\\?|!)?)"
+     'special            "([&']?)"
+     'other-char         "([><=!\\+\\/\\*-]+)"
+     'open-paren         "(\\()"
+     'special-open-paren "('?\\()"
+     'close-paren        "(\\))"
+     'alternative-parens "\\{|\\[|\\}|\\]"
+     'special-literal    (concat sibilant.tokens.special
+                                sibilant.tokens.literal))
 
+(set sibilant 'token-precedence
+     '( regex comment string number special-literal other-char
+        special-open-paren close-paren alternative-parens))
 
 (var tokenize
   (assign sibilant.tokenize
 	(lambda (string)
-	  (var tokens (list)
-	    parse-stack (list tokens)
-	    specials (list))
+	  (var tokens []
+	    parse-stack [tokens]
+	    specials [])
 
 	  (def accept-token (token)
 	    (send (get parse-stack 0) push token))
 
 	  (def increase-nesting ()
-	    (var new-arr (list))
+	    (var new-arr [])
 	    (accept-token new-arr)
 	    (parse-stack.unshift new-arr))
 
@@ -43,21 +44,32 @@
 	  (def handle-token (token)
 	    (var special (first token)
 	      token token)
+
 	    (if (== special "'")
 		(do
 		  (assign token (token.slice 1))
 		  (increase-nesting)
 		  (accept-token 'quote))
 	      (assign special false))
+
 	    (specials.unshift (as-boolean special))
-	    (if (== token "(") (increase-nesting)
-	      (do
-		(if (== token ")") (decrease-nesting)
-		  (if (token.match /^-?[0-9.]+$/)
-		      (accept-token (parse-float token))
-		    (accept-token token)))
-		(when (specials.shift)
-		  (decrease-nesting)))))
+
+            (switch token
+                    ("(" (increase-nesting))
+                    (("]" "}" ")") (decrease-nesting))
+
+                    ("{" (increase-nesting) (accept-token 'hash))
+                    ("[" (increase-nesting) (accept-token 'list))
+                     
+                    (default
+                      (if (token.match (regex (concat "^" sibilant.tokens.number "$")))
+                          (accept-token (parse-float token))
+                        (accept-token token))))
+
+            (when (and (!= token "(")
+                       (specials.shift))
+              (decrease-nesting)))
+
 
           (var ordered-regexen (map sibilant.token-precedence
                                        (lambda (x) (get sibilant.tokens x)))
@@ -83,7 +95,7 @@
    "\n"))
 
 (def construct-hash (array-of-arrays)
-  (inject (hash) array-of-arrays
+  (inject {} array-of-arrays
 	  (lambda (object item)
 	    (set object (first item) (get object (second item)))
 	    object)))
@@ -131,7 +143,7 @@
 (def macros.do (&rest body)
   (var last-index (-math.max 0 (- body.length 1)))
 
-  (set body last-index (list 'return (get body last-index)))
+  (set body last-index ['return (get body last-index)])
 
   (join "\n"
 	(map body (lambda (arg)
@@ -161,11 +173,11 @@
 
 (def transform-args (arglist)
   (var last undefined
-          args (list))
+          args [])
   (each (arg) arglist
 	(if (== (first arg) "&") (assign last (arg.slice 1))
 	  (do
-	    (args.push (list (or last 'required) arg))
+	    (args.push [ (or last 'required) arg ])
 	    (assign last null))))
 
   (when last
@@ -175,7 +187,7 @@
 
 
 (def macros.reverse (arr)
-  (var reversed (list))
+  (var reversed [])
   (each (item) arr (reversed.unshift item))
   reversed)
 
@@ -233,7 +245,7 @@
     doc-string undefined)
 
   (set body (- body.length 1)
-       (list 'return (get body (- body.length 1))))
+       [ 'return (get body (- body.length 1)) ])
 
   (when (and (== (typeof (first body)) 'string)
 	     (send (first body) match /^".*"$/))
@@ -298,7 +310,8 @@
 	 (if (defined? (get macros (translate (first token))))
 	     (apply (get macros (translate (first token))) (token.slice 1))
 	   (apply (get macros (or hint 'call)) token))
-       (if (and (string? token) (token.match /^\$?[*\.a-z-]+([0-9])*(!|\?)?$/))
+       (if (and (string? token)
+                (token.match (regex (concat "^" sibilant.tokens.literal "$"))))
 	   (literal token)
 	 (if (and (string? token) (token.match (regex "^;")))
 	     (token.replace (regex "^;+") "//")

@@ -6,8 +6,9 @@
   (var args (or args (process.argv.slice 2))
     default-label 'unlabeled
     current-label default-label
-    config (or config (hash))
-    unlabeled (list))
+    after-break false
+    config (or config {})
+    unlabeled [])
 
   (def label? (item) (and (string? item) (send /^-/ test item)))
 
@@ -29,7 +30,7 @@
   (def add-value (hash key value)
     (var current-value (get hash key))
     (when (undefined? current-value)
-      (assign current-value (list))
+      (assign current-value [])
       (set hash key current-value))
     (when (!= true value)
       (current-value.push value)))
@@ -37,17 +38,19 @@
   (def reset-label ()
     (assign current-label default-label))
 
-  (inject (hash) args
-	  (lambda (return-hash item index)
-	    (if (label? item)
-		(do
-		  (assign current-label (label-for item))
-		  (add-value return-hash current-label true)
-		  (when (not (takes-args? item)) (reset-label)))
-	      (do
-		(add-value return-hash current-label item)
-		(reset-label)))
-	    return-hash)))
+  (inject {} args
+    (lambda (return-hash item index)
+      (if (== "--" item)
+          (assign after-break true)
+          (if after-break
+              (add-value return-hash 'after-break item)
+              (if (label? item)
+                  (do (assign current-label (label-for item))
+                      (add-value return-hash current-label true)
+                      (when (not (takes-args? item)) (reset-label)))
+                  (do (add-value return-hash current-label item)
+                      (reset-label)))))
+      return-hash)))
 
 (def process-options (&optional config)
   (var options (extract-options config))

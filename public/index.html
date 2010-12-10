@@ -90,22 +90,19 @@ are allowed"
 	language="sibilant/example"
 	data-title="Literals: Variable names">
 <![CDATA[
-"Variable names can only include lower-case
-letters, the period (.) and the hyphen (-).
+"Variable names may include letters,
+the period (.) and the hyphen (-).
+Lower case letters are idiomatic.
 They may end with a question mark (?) or with a
 bang (!). They may start with a sigil ($)."
 
 simple
-
 multi-word-variable-name
-
 is-this-thing-on?
-
 save!
-
 variable-number-5
-
 $jquery
+JSON
 
 ]]>
 </script>
@@ -146,6 +143,11 @@ $jquery
 (list hello
       '(q r s)
       (list foo bar baz))
+
+; [ a b c ] is a shortcut for (list a b c)
+
+[ a 'b 'c  (this-is 'still-sibilant) ]
+
 ]]>
 </script>
 
@@ -159,12 +161,10 @@ $jquery
 (hash key-one value-one
       key-two value-two)
 
-(hash "multi word keys are" 'quoted
-      and '(any value is legal))
-
 (hash a b c d e f)
 
-(hash sub-hash (hash key value))]]>
+; { a b } is a shortcut for (hash a b)
+{ a 'b c (+ 1 2 3) }
 </script>
 
 
@@ -366,8 +366,8 @@ $jquery
 
 (chain ($ ".some.random#tag")
        (show)
-       (css (hash background-color 'red))
-       (animate (hash width 100))
+       (css { background-color 'red })
+       (animate { width 100 })
        (click (lambda (evt)
          (chain ($ this)
            (hide)
@@ -472,6 +472,26 @@ Let's call it 'cond'."
 ; macros are available
 
 (macro-list)
+]]>
+</script>
+
+<script id="json"
+	data-title="JSON is valid sibilant"
+	language="sibilant/example">
+<![CDATA[
+"Example from http://www.json.org/example.html:"
+
+{"menu": {
+  "id": "file",
+  "value": "File",
+  "popup": {
+    "menuitem": [
+      {"value": "New", "onclick": "CreateNewDoc()"},
+      {"value": "Open", "onclick": "OpenDoc()"},
+      {"value": "Close", "onclick": "CloseDoc()"}
+    ]
+  }
+}}
 ]]>
 </script>
 

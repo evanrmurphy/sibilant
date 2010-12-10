@@ -1,5 +1,11 @@
+(mac cons (first rest)
+  (macros.send (macros.list first) 'concat rest))
+
 (mac join (glue arr)
   (concat "(" (translate arr) ").join(" (translate glue) ")"))
+
+(mac list (&rest args)
+  (concat "[ " (join ", " (map args translate)) " ]"))
 
 (mac +   (&rest args)
   (concat "(" (join " + " (map args translate)) ")"))
@@ -184,9 +190,8 @@
 	  (concat "\"" arg ":\" + " (translate arg))))))
 
 (mac each (item array &rest body)
-  (body.unshift item)
   (macros.send (translate array) 'for-each
-	(apply macros.lambda body)))
+	(apply macros.lambda (cons item body))))
 
 
 (mac assign (&rest args)
@@ -194,9 +199,6 @@
 	(bulk-map args (lambda (name value)
 			 (concat (translate name) " = "
 				 (translate value) ";")))))
-
-(mac list (&rest args)
-  (concat "[ " (join ", " (map args translate)) " ]"))
 
 (mac macro-list ()
   (concat "["
@@ -251,14 +253,12 @@
    '**return-value**))
 
 (mac until (condition &rest block)
-  (var condition (list 'not condition))
-  (send block unshift condition)
-  (apply (get macros 'while) block))
+  (apply (get macros 'while)
+         (cons ['not condition] block)))
 
 
 (mac thunk (&rest args)
-  (args.unshift (list))
-  (apply macros.lambda args))
+  (apply macros.lambda (cons [] args)))
 
 (mac keys (obj)
   (macros.call "Object.keys" (translate obj)))
@@ -320,3 +320,4 @@
        (chain (get lines (- lines.length 1)) (concat "}")))
 
   (concat "(function() {" (apply indent lines) "})()"))
+

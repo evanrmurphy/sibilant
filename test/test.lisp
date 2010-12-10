@@ -11,10 +11,14 @@
   (send string trim))
 
 (def assert-equal (expected actual &optional message)
-  (sys.print (if (== expected actual) (do (incr passes) ".")
-               (do (incr fails)
-                      (concat "F\n\n" (if message (concat message "\n\n") "") "expected "expected 
-                              "\n\nbut got " actual "\n\n")))))
+  (sys.print (if (== expected actual)
+                  (do (incr passes) ".")
+                 (do (incr fails)
+                     (concat "F\n\n" (+ passes fails) ": "
+                             (if message
+                                  (concat message "\n\n")
+                                 "")
+                             "expected " expected "\n\nbut got " actual "\n\n")))))
 
 (def assert-translation (sibilant-code js-code)
   (assert-equal (trim js-code)
@@ -27,15 +31,21 @@
 (def assert-false (&rest args)
   (args.unshift false)
   (apply assert-equal args))
+(def assert-deep-equal (expected actual)
+  (each (item index) expected
+            (assert-equal item (get actual index))))
 
+(assert-deep-equal '(a b c) ['a 'b 'c])
 
 (assert-translation "5"        "5")
 (assert-translation "$"        "$")
 (assert-translation "-10.2"    "-10.2")
 (assert-translation "hello"    "hello")
 (assert-translation "hi-world" "hiWorld")
+(assert-translation "(Object.to-string)" "Object.toString();")
 (assert-translation "1two"     "1\ntwo")
 (assert-translation "t1"       "t1")
+(assert-translation "JSON"     "JSON")
 (assert-translation "time-zone-1"       "timeZone1")
 (assert-translation "'t1"      "\"t1\"")
 (assert-translation "*hello*"  "_hello_")
@@ -354,6 +364,43 @@ afterInclude2();")
  a === c)")
 
 (assert-translation "(do)" "return undefined;")
+
+
+
+
+(assert-translation "{foo : bar wibble : wam }"
+"{
+  foo: bar,
+  wibble: wam
+}")
+
+(assert-translation "[ foo bar (baz) ]"
+"[ foo, bar, baz() ]")
+
+(assert-translation "[[] {} baz {q r s [t]}]"
+"[ [  ], {  }, baz, {
+  q: r,
+  s: [ t ]
+} ]")
+
+(assert-translation "{ this: is, valid: [\"json\"]}",
+"{
+  this: is,
+  valid: [ \"json\" ]
+}")
+
+
+(assert-translation "(cons a [ b c d ])"
+                     "[ a ].concat([ b, c, d ])")
+
+(assert-deep-equal '(a b c d) (cons 'a '(b c d)))
+
+
+
+
+
+
+
 
 (console.log (concat "\n\n"  (+ passes fails) " total tests, "
                      passes " passed, " fails " failed"))
