@@ -267,7 +267,7 @@
   (join "\n" (map objects (lambda (obj)
                             (concat "delete " (translate obj) ";")))))
 
-(mac delmacro (macro-name)
+(mac delmac (macro-name)
   (delete (get macros (translate macro-name))) "")
 
 (mac defhash (name &rest pairs)
