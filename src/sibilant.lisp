@@ -1,7 +1,7 @@
 (var sibilant exports
         sys      (require 'sys)
         import   (require "sibilant/import")
-        error    (lambda (str) (throw str))
+        error    (fn (str) (throw str))
         inspect  sys.inspect)
 
 (import (require "sibilant/functional"))
