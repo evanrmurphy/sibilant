@@ -245,14 +245,14 @@ JSON
 	language="sibilant/example"
 	data-title="Lambdas">
 <![CDATA[
-; (lambda) works much like (def)
+; (fn) works much like (def)
 ; This example uses Node's async
 ; readfile
 
 (var fs (require 'fs))
 
 (fs.read-file "path/to/file"
-  (lambda (error content)
+  (fn (error content)
     (alert (or error content))))
 ]]>
 </script>
@@ -368,7 +368,7 @@ JSON
        (show)
        (css { background-color 'red })
        (animate { width 100 })
-       (click (lambda (evt)
+       (click (fn (evt)
          (chain ($ this)
            (hide)
            (data 'clicked true))
@@ -388,7 +388,7 @@ The real power of sibilant is the ability
 to define (and redefine) macros, extending
 the language.  All constructs can be
 redefined. This includes core language
-features like +, lambda, if, def, var,
+features like +, fn, if, def, var,
 and even mac itself.
 
 Defining macros is as easy as defining

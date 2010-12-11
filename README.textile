@@ -160,9 +160,9 @@ If both @&optional@ and @&rest@ arguments are used, the @&optionals@ are filled 
 
 h3. Lambdas
 
-Lambdas are defined just like functions (with @&rest@ and @&optional@ args, if you so desire), but with the lambda keyword.
+Lambdas are defined just like functions (with @&rest@ and @&optional@ args, if you so desire), but with the fn keyword.
 
-In fact, @(def name (args) body)@ is functionally equivalent to @(var name (lambda (args) body))@.
+In fact, @(def name (args) body)@ is functionally equivalent to @(var name (fn (args) body))@.
 
 h2. Control flow
 

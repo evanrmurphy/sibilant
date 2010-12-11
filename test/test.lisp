@@ -137,7 +137,7 @@
 
 (assert-translation "(comment hello)" "// hello")
 
-(assert-translation "(comment (lambda () hello))"
+(assert-translation "(comment (fn () hello))"
     (concat "// (function() {\n"
 	    "//   return hello;\n"
 	    "// })"))
@@ -189,7 +189,7 @@ delete bam.bibble;")
   })();
 })();")
 
-(assert-translation "(lambda (&optional first-arg second-arg) true)" "(function(firstArg, secondArg) {
+(assert-translation "(fn (&optional first-arg second-arg) true)" "(function(firstArg, secondArg) {
   // firstArg:optional secondArg:required
   if (arguments.length < 2) // if firstArg is missing
     var secondArg = firstArg, firstArg = undefined;

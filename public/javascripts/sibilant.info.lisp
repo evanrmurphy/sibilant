@@ -26,7 +26,7 @@
     ($window.click (thunk (set-timeout check-hash 25)))
 
     ($window.bind 'hash-change
-                  (lambda (evt hash)
+                  (fn (evt hash)
                     (var item (send items filter hash))
                     (when (< 0 item.length)
                       (var content (chain item
@@ -64,7 +64,7 @@
 
     (chain textarea
 	   (focus)
-	   (keyup (lambda (evt)
+	   (keyup (fn (evt)
                     (var output ($ "#output"))
 		    (try (chain output
 				(text (sibilant.translate-all (textarea.val)))
