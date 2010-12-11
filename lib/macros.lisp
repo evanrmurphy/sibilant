@@ -42,7 +42,7 @@
 
 (mac set (arr &rest kv-pairs)
   (join "\n" (bulk-map kv-pairs
-		       (lambda (k v)
+		       (fn (k v)
 			 (concat "(" (translate arr) ")"
 				 "[" (translate k) "] = " (translate v) ";")))))
 				       
@@ -61,9 +61,9 @@
 
 (mac comment (&rest contents)
   (map contents
-       (lambda (item)
+       (fn (item)
 	 (join "\n" (map (send (translate item) split "\n")
-			 (lambda (line) (concat "// " line)))))))
+			 (fn (line) (concat "// " line)))))))
 
 (mac meta (body)
   (eval (translate body)))
@@ -135,7 +135,7 @@
       ",\n    "
       (bulk-map
         pairs
-        (lambda (name value)
+        (fn (name value)
           (concat (translate name) " = " (translate value)))))
 	  ";"))
 
@@ -144,7 +144,7 @@
   (concat "("
           (join " &&\n "
                 (map other-things
-                     (lambda (thing)
+                     (fn (thing)
                        (concat translated-first-thing
                                " === "
                                (translate thing)))))
@@ -176,16 +176,16 @@
 (mac inspect (&rest args)
   (join " + \"\\n\" + "
    (map args
-	(lambda (arg)
+	(fn (arg)
 	  (concat "\"" arg ":\" + " (translate arg))))))
 
 (mac each (item array &rest body)
   (macros.send (translate array) 'for-each
-	(apply macros.lambda (cons item body))))
+	(apply macros.fn (cons item body))))
 
 (mac assign (&rest args)
   (join "\n"
-	(bulk-map args (lambda (name value)
+	(bulk-map args (fn (name value)
 			 (concat (translate name) " = "
 				 (translate value) ";")))))
 
@@ -214,7 +214,7 @@
   (concat (translate object) " // chain"
 	  (indent (join "\n"
 		(map calls
-		     (lambda (call, index)
+		     (fn (call, index)
 		       (var method (first call))
 		       (var args (rest call))
 		       (concat "." (translate method)
@@ -246,13 +246,13 @@
 
 
 (mac thunk (&rest args)
-  (apply macros.lambda (cons [] args)))
+  (apply macros.fn (cons [] args)))
 
 (mac keys (obj)
   (macros.call "Object.keys" (translate obj)))
 
 (mac delete (&rest objects)
-  (join "\n" (map objects (lambda (obj)
+  (join "\n" (map objects (fn (obj)
                             (concat "delete " (translate obj) ";")))))
 
 (mac delmac (macro-name)
@@ -294,7 +294,7 @@
 	
 	(var case-string
 	  (if (array? case-name)
-	      (join "\n" (map case-name (lambda (c)
+	      (join "\n" (map case-name (fn (c)
 					  (concat "case " (translate c) ":"))))
 	    (if (== 'default case-name) "default:"
 	      (concat "case " (translate case-name) ":"))))
