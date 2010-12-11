@@ -19,7 +19,7 @@
 (mac !=  (&rest args) (concat "(" (join " !== " (map args translate)) ")"))
 
 ; node won't let me define this simple macro on one line
-(mac /   (&rest args)
+(mac / (&rest args)
   (concat "(" (join " / " (map args translate)) ")"))
 
 (mac mod (&rest args)
@@ -85,7 +85,6 @@
   ((get macros "==") 0
    (macros.mod (translate number) 2)))
 
-
 (mac function? (thing)
   (concat "typeof(" (translate thing) ") === 'function'"))
 
@@ -150,7 +149,6 @@
                                " === "
                                (translate thing)))))
           ")"))
-
 
 (mac string? (thing)
   (concat "typeof(" (translate thing) ") === \"string\""))
