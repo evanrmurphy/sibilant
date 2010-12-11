@@ -149,14 +149,14 @@
 	(map body (lambda (arg)
 		    (concat (translate arg) ";")))))
 
-(def macros.call (fn-name &rest args)
-  (concat (translate fn-name)
+(def macros.call (f-name &rest args)
+  (concat (translate f-name)
 	  "(" (join ", " (map args translate)) ")"))
 
-(def macros.def (fn-name &rest args-and-body)
-  (var fn-name-tr (translate fn-name)
-    start (if (/\./ fn-name-tr) "" "var "))
-  (concat start fn-name-tr " = "
+(def macros.def (f-name &rest args-and-body)
+  (var f-name-tr (translate f-name)
+    start (if (/\./ f-name-tr) "" "var "))
+  (concat start f-name-tr " = "
 	  (apply macros.lambda args-and-body)
 	  ";\n"))
 

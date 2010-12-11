@@ -1,50 +1,50 @@
 (var functional exports)
 
-(def bulk-map (arr fn)
+(def bulk-map (arr f)
   (var index 0
-    group-size fn.length
+    group-size f.length
     ret-arr [])
 
   (while (< index arr.length)
     (send ret-arr push
-	  (apply fn (send arr slice
+	  (apply f (send arr slice
 			  index (+ index group-size))))
     (+= index group-size))
   ret-arr)
 
-(def inject (start items fn)
+(def inject (start items f)
   (var value start)
   (when (array? items)
       (each (item index) items
-	    (assign value (fn value item index))))
+	    (assign value (f value item index))))
   value)
 
-(def map (items fn)
+(def map (items f)
   (inject [] items
 	  (lambda (collector item index)
-	    (send collector push (fn item index))
+	    (send collector push (f item index))
 	    collector)))
 
-(def select (items fn)
+(def select (items f)
   (inject [] items
 	  (lambda (collector item index)
-	    (when (fn item index)
+	    (when (f item index)
 	      (send collector push item))
 	    collector)))
 
-(def detect (items fn)
+(def detect (items f)
   (var return-item undefined
     index 0
     items items)
 
   (until (or (== items.length index) return-item)
-    (when (fn (get items index) index)
+    (when (f (get items index) index)
       (assign return-item (get items index)))
     (++ index)))
 
-(def reject (items fn)
-  (def args [ items fn ])
-  (select items (lambda () (not (apply fn args)))))
+(def reject (items f)
+  (def args [ items f ])
+  (select items (lambda () (not (apply f args)))))
 
 (def compact (arr)
   (select arr (lambda (item) (as-boolean item))))
