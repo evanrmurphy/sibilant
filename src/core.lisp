@@ -21,7 +21,7 @@
 
 (var tokenize
   (assign sibilant.tokenize
-	(lambda (string)
+	(fn (string)
 	  (var tokens []
 	    parse-stack [tokens]
 	    specials [])
@@ -72,7 +72,7 @@
 
 
           (var ordered-regexen (map sibilant.token-precedence
-                                       (lambda (x) (get sibilant.tokens x)))
+                                       (fn (x) (get sibilant.tokens x)))
             master-regex (regex (join "|" ordered-regexen) 'g))
 
 	  (chain string
@@ -96,7 +96,7 @@
 
 (def construct-hash (array-of-arrays)
   (inject {} array-of-arrays
-	  (lambda (object item)
+	  (fn (object item)
 	    (set object (first item) (get object (second item)))
 	    object)))
 
@@ -104,7 +104,7 @@
 (set sibilant 'macros macros)
 
 (set macros 'return
-     (lambda (token)
+     (fn (token)
        (var default-return (concat "return " (translate token)))
        
        (if (array? token)
@@ -146,7 +146,7 @@
   (set body last-index ['return (get body last-index)])
 
   (join "\n"
-	(map body (lambda (arg)
+	(map body (fn (arg)
 		    (concat (translate arg) ";")))))
 
 (def macros.call (f-name &rest args)
@@ -157,11 +157,11 @@
   (var f-name-tr (translate f-name)
     start (if (/\./ f-name-tr) "" "var "))
   (concat start f-name-tr " = "
-	  (apply macros.lambda args-and-body)
+	  (apply macros.fn args-and-body)
 	  ";\n"))
 
 (def macros.mac (name &rest args-and-body)
-  (var js (apply macros.lambda args-and-body)
+  (var js (apply macros.fn args-and-body)
     name (translate name))
   (try (set macros name (eval js))
        (error (concat "error in parsing macro "
@@ -210,7 +210,7 @@
 	   (concat "var "
 		   (chain
 		    (map (args.slice (+ option-index 1))
-			 (lambda (arg arg-index)
+			 (fn (arg arg-index)
 			   (concat (translate (second arg)) " = "
 				   (translate (second (get args
 							   (+ option-index
@@ -233,7 +233,7 @@
     (concat "// "
 	    (join " "
 		  (map args
-		       (lambda (arg)
+		       (fn (arg)
 			 (concat (translate (second arg)) ":" (first arg))))))))
 
 ;; brain 'splode
@@ -307,7 +307,7 @@
 	    "odd number of key-value pairs in hash: "
 	    (call inspect pairs))))
   (var pair-strings
-    (bulk-map pairs (lambda (key value)
+    (bulk-map pairs (fn (key value)
 		      (concat (translate key) ": "
 			      (translate value)))))
   (if (>= 1 pair-strings.length)
@@ -321,7 +321,7 @@
 		 (replace /\?$/ "__QUERY")
 		 (replace /!$/  "__BANG"))
 	  (string.match /-(.)/g)
-	  (lambda (return-string match)
+	  (fn (return-string match)
 	    (return-string.replace match
 		  (send (second match) to-upper-case)))))
 
