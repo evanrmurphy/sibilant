@@ -269,7 +269,7 @@
 (def macros.fn (arglist &rest body)
   (var args (transform-args arglist)
     rest (first (select args
-			(lambda (arg)
+			(fn (arg)
 			  (== 'rest (first arg)))))
     doc-string undefined)
 
@@ -286,12 +286,12 @@
     comment-string (build-comment-string args))
 
   (concat "(function("
-	  (join ", " (map args (lambda (arg) (translate (second arg)))))
+	  (join ", " (map args (fn (arg) (translate (second arg)))))
 	  ") {"
 	  (indent comment-string doc-string args-string
 		  (join "\n"
 			(map body
-			     (lambda (stmt)
+			     (fn (stmt)
 			       (concat (translate stmt) ";")))))
 	  "})"))
 
