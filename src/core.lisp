@@ -266,6 +266,34 @@
 			       (concat (translate stmt) ";")))))
 	  "})"))
 
+(def macros.fn (arglist &rest body)
+  (var args (transform-args arglist)
+    rest (first (select args
+			(lambda (arg)
+			  (== 'rest (first arg)))))
+    doc-string undefined)
+
+  (set body (- body.length 1)
+       [ 'return (get body (- body.length 1)) ])
+
+  (when (and (== (typeof (first body)) 'string)
+	     (send (first body) match /^".*"$/))
+    (assign doc-string
+	  (concat "/* " (eval (body.shift)) " */\n")))
+
+  (var no-rest-args (if rest (args.slice 0 -1) args)
+    args-string (build-args-string no-rest-args rest)
+    comment-string (build-comment-string args))
+
+  (concat "(function("
+	  (join ", " (map args (lambda (arg) (translate (second arg)))))
+	  ") {"
+	  (indent comment-string doc-string args-string
+		  (join "\n"
+			(map body
+			     (lambda (stmt)
+			       (concat (translate stmt) ";")))))
+	  "})"))
 
 (def macros.quote (item)
   (if (== "Array" item.constructor.name)
