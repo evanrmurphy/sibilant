@@ -21,13 +21,13 @@
 
 (def map (items f)
   (inject [] items
-	  (lambda (collector item index)
+	  (fn (collector item index)
 	    (send collector push (f item index))
 	    collector)))
 
 (def select (items f)
   (inject [] items
-	  (lambda (collector item index)
+	  (fn (collector item index)
 	    (when (f item index)
 	      (send collector push item))
 	    collector)))
@@ -44,10 +44,10 @@
 
 (def reject (items f)
   (def args [ items f ])
-  (select items (lambda () (not (apply f args)))))
+  (select items (fn () (not (apply f args)))))
 
 (def compact (arr)
-  (select arr (lambda (item) (as-boolean item))))
+  (select arr (fn (item) (as-boolean item))))
 
 (each (export-function)
       '(inject map select detect reject compact bulk-map)

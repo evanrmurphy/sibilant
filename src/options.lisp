@@ -39,7 +39,7 @@
     (assign current-label default-label))
 
   (inject {} args
-    (lambda (return-hash item index)
+    (fn (return-hash item index)
       (if (== "--" item)
           (assign after-break true)
           (if after-break
@@ -60,7 +60,7 @@
        (when (string? handle) (handle-pair handle value))
        (when (function? handle) (apply handle value)))
      (send (keys options) for-each
-	   (lambda (key) (handle-pair key (get options key)))))
+	   (fn (key) (handle-pair key (get options key)))))
 
   options)
     

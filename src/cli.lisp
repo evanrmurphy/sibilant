@@ -44,8 +44,8 @@
 	  data "")
 
 	(stdin.set-encoding "utf8")
-	(stdin.on 'data (lambda (chunk) (assign data (concat data chunk))))
-	(stdin.on 'end (lambda (&rest args)
+	(stdin.on 'data (fn (chunk) (assign data (concat data chunk))))
+	(stdin.on 'end (fn (&rest args)
 			 (run-in-sandbox (sibilant.translate-all data)))))
     (each (arg) args
 	  (run-in-sandbox (sibilant.translate-all arg)))))

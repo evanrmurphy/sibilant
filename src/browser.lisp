@@ -35,7 +35,7 @@
   (def sibilant.load-next-script ()
     (var next-script (scripts.shift))
     (when (defined? next-script)
-      ($.get next-script (lambda (data)
+      ($.get next-script (fn (data)
                            (eval-with-try-catch  (sibilant.translate-all data))
                            (sibilant.script-loaded)))
       true))

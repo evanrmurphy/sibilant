@@ -17,7 +17,7 @@
 
 (assign context (create-context))
 
-(stream.on 'data (lambda (data) (readline.write data)))
+(stream.on 'data (fn (data) (readline.write data)))
 
 (def display-prompt ()
   (readline.set-prompt
@@ -28,7 +28,7 @@
   (readline.prompt))
 
 (readline.on 'line
-     (lambda (cmd)
+     (fn (cmd)
        (var js-line ""
 	 flushed true)
 
@@ -60,7 +60,7 @@
 (readline.on 'close stream.destroy)
 
 (stream.on 'drain
-    (lambda ()
+    (fn ()
       (when display-prompt-on-drain
 	(display-prompt)
 	(assign display-prompt-on-drain false))))
