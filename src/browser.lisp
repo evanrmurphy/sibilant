@@ -5,8 +5,8 @@
  (set window 'sibilant sibilant)
 
  (var= exports {})
- (include (concat **dirname "/../src/functional.lisp"))
- (include (concat **dirname "/../src/core.lisp"))
+ (include (+ **dirname "/../src/functional.lisp"))
+ (include (+ **dirname "/../src/core.lisp"))
 
  ($ (thunk
   (var= sibilant window.sibilant

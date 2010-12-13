@@ -7,7 +7,7 @@
 
 (def create-context ()
   (= context.initialized? true)
-  (set module 'filename (concat (process.cwd) "/exec"))
+  (set module 'filename (+ (process.cwd) "/exec"))
   (set context 'module  module
                'require require)
   (each-key key global (set context key (get global key))))
@@ -44,7 +44,7 @@
 	  data "")
 
 	(stdin.set-encoding "utf8")
-	(stdin.on 'data (fn (chunk) (= data (concat data chunk))))
+	(stdin.on 'data (fn (chunk) (= data (+ data chunk))))
 	(stdin.on 'end (fn (&rest args)
 			 (run-in-sandbox (sibilant.translate-all data)))))
     (each (arg) args
@@ -141,7 +141,7 @@ $ sibilant --repl
 	  (do
 	    (var=
 	      input-basename (path.basename input-path ".lisp")
-	      output-path (concat (path.join output-dir input-basename) ".js"))
+	      output-path (+ (path.join output-dir input-basename) ".js"))
 	    (fs.write-file output-path translated))
 	(if cli-options.execute
 	    (run-in-sandbox translated input-path)
