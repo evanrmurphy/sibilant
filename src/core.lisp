@@ -20,7 +20,7 @@
         special-open-paren close-paren alternative-parens))
 
 (var tokenize
-  (assign sibilant.tokenize
+  (= sibilant.tokenize
 	(fn (string)
 	  (var tokens []
 	    parse-stack [tokens]
@@ -47,10 +47,10 @@
 
 	    (if (== special "'")
 		(do
-		  (assign token (token.slice 1))
+		  (= token (token.slice 1))
 		  (increase-nesting)
 		  (accept-token 'quote))
-	      (assign special false))
+	      (= special false))
 
 	    (specials.unshift (as-boolean special))
 
@@ -175,10 +175,10 @@
   (var last undefined
           args [])
   (each (arg) arglist
-	(if (== (first arg) "&") (assign last (arg.slice 1))
+	(if (== (first arg) "&") (= last (arg.slice 1))
 	  (do
 	    (args.push [ (or last 'required) arg ])
-	    (assign last null))))
+	    (= last null))))
 
   (when last
     (error (concat "unexpected argument modifier: " last)))
@@ -199,7 +199,7 @@
 
   (each (arg option-index) args
       (when (== (first arg) 'optional)
-	(assign
+	(=
 	 args-string
 	 (concat
 	  args-string
@@ -249,7 +249,7 @@
 
   (when (and (== (typeof (first body)) 'string)
 	     (send (first body) match /^".*"$/))
-    (assign doc-string
+    (= doc-string
 	  (concat "/* " (eval (body.shift)) " */\n")))
 
   (var no-rest-args (if rest (args.slice 0 -1) args)
@@ -300,10 +300,10 @@
 (def translate (token hint)
   (var hint hint)
   (when (and hint (undefined? (get macros hint)))
-    (assign hint undefined))
+    (= hint undefined))
 
   (when (defined? token)
-    (when (string? token) (assign token (token.trim)))
+    (when (string? token) (= token (token.trim)))
     (try
      (if (array? token)
 	 (if (defined? (get macros (translate (first token))))
@@ -328,7 +328,7 @@
   (var buffer "")
   (each (token) (tokenize contents)
 	(var line (translate token "statement"))
-	(when line (assign buffer (concat buffer line "\n"))))
+	(when line (= buffer (concat buffer line "\n"))))
   buffer)
 
 (set sibilant 'translate-all translate-all)
