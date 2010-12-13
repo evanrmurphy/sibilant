@@ -63,7 +63,7 @@
   (map contents
        (fn (item)
 	 (join "\n" (map (send (translate item) split "\n")
-			 (fn (line) (concat "// " line)))))))
+			 (fn (line) (+ "// " line)))))))
 
 (mac meta (body)
   (eval (translate body)))
@@ -75,7 +75,7 @@
   ((get macros "==") (translate item) 0))
 
 (mac empty? (arr)
-  (concat "((" (translate arr) ").length === 0)"))
+  (+ "((" (translate arr) ").length === 0)"))
 
 (mac odd? (number)
   ((get macros "!=") 0
@@ -86,16 +86,16 @@
    (macros.mod (translate number) 2)))
 
 (mac function? (thing)
-  (concat "typeof(" (translate thing) ") === 'function'"))
+  (+ "typeof(" (translate thing) ") === 'function'"))
 
 (mac undefined? (thing)
-  (concat "typeof(" (translate thing) ") === 'undefined'"))
+  (+ "typeof(" (translate thing) ") === 'undefined'"))
 
 (mac defined? (thing)
-  (concat "typeof(" (translate thing) ") !== 'undefined'"))
+  (+ "typeof(" (translate thing) ") !== 'undefined'"))
 
 (mac number? (thing)
-  (concat "typeof(" (translate thing) ") === 'number'"))
+  (+ "typeof(" (translate thing) ") === 'number'"))
 
 (mac first (arr) (macros.get arr 0))
 (mac second (arr) (macros.get arr 1))
@@ -117,9 +117,9 @@
   (macros.get (macros.send arr 'slice -1) 0))
 
 (mac if (arg truebody falsebody)
-  (concat
+  (+
    "(function() {"
-   (indent (concat
+   (indent (+
 	    "if (" (translate arg) ") {"
 	    (indent (macros.do truebody))
 	    "} else {"
@@ -128,14 +128,14 @@
    "})()"))
 
 (mac var= (&rest pairs)
-  (concat
+  (+
     "var "
     (join
       ",\n    "
       (bulk-map
         pairs
         (fn (name value)
-          (concat (translate name) " = " (translate value)))))
+          (+ (translate name) " = " (translate value)))))
 	  ";"))
 
 (mac == (first-thing &rest other-things)
