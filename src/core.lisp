@@ -171,6 +171,10 @@
 (def macros.concat (&rest args)
   (concat "(" (join " + " (map args translate)) ")"))
 
+(= (get macros '+)
+   (fn (&rest args)
+     (+ "(" (join " + " (map args translate)) ")")))
+
 (def transform-args (arglist)
   (var= last undefined
        args [])
@@ -290,7 +294,9 @@
   (inject (chain string
                  (replace /\*/g "_")
                  (replace /\?$/ "__QUERY")
-                 (replace /!$/  "__BANG"))
+                 (replace /!$/  "__BANG")
+                 (replace /\+/  "__PLUS")
+                 )
           (string.match /-(.)/g)
           (fn (return-string match)
               (return-string.replace match
