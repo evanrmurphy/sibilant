@@ -2,43 +2,43 @@
   (macros.send (macros.list first) 'concat rest))
 
 (mac join (glue arr)
-  (concat "(" (translate arr) ").join(" (translate glue) ")"))
+  (+ "(" (translate arr) ").join(" (translate glue) ")"))
 
 (mac list (&rest args)
-  (concat "[ " (join ", " (map args translate)) " ]"))
+  (+ "[ " (join ", " (map args translate)) " ]"))
 
-(mac +   (&rest args) (concat "(" (join " + " (map args translate)) ")"))
-(mac -   (&rest args) (concat "(" (join " - " (map args translate)) ")"))
-(mac *   (&rest args) (concat "(" (join " * " (map args translate)) ")"))
-(mac or  (&rest args) (concat "(" (join " || " (map args translate)) ")"))
-(mac and (&rest args) (concat "(" (join " && " (map args translate)) ")"))
-(mac >   (&rest args) (concat "(" (join " > " (map args translate)) ")"))
-(mac <   (&rest args) (concat "(" (join " < " (map args translate)) ")"))
-(mac <=  (&rest args) (concat "(" (join " <= " (map args translate)) ")"))
-(mac >=  (&rest args) (concat "(" (join " >= " (map args translate)) ")"))
-(mac !=  (&rest args) (concat "(" (join " !== " (map args translate)) ")"))
+(mac +   (&rest args) (+ "(" (join " + " (map args translate)) ")"))
+(mac -   (&rest args) (+ "(" (join " - " (map args translate)) ")"))
+(mac *   (&rest args) (+ "(" (join " * " (map args translate)) ")"))
+(mac or  (&rest args) (+ "(" (join " || " (map args translate)) ")"))
+(mac and (&rest args) (+ "(" (join " && " (map args translate)) ")"))
+(mac >   (&rest args) (+ "(" (join " > " (map args translate)) ")"))
+(mac <   (&rest args) (+ "(" (join " < " (map args translate)) ")"))
+(mac <=  (&rest args) (+ "(" (join " <= " (map args translate)) ")"))
+(mac >=  (&rest args) (+ "(" (join " >= " (map args translate)) ")"))
+(mac !=  (&rest args) (+ "(" (join " !== " (map args translate)) ")"))
 
 ; node won't let me define this simple macro on one line
 (mac / (&rest args)
-  (concat "(" (join " / " (map args translate)) ")"))
+  (+ "(" (join " / " (map args translate)) ")"))
 
 (mac mod (&rest args)
-  (concat "(" (join " % " (map args translate)) ")"))
+  (+ "(" (join " % " (map args translate)) ")"))
 
 (mac pow (base exponent)
   (macros.call "Math.pow" base exponent))
 
 (mac += (item increment)
-  (concat (translate item) " += " (translate increment)))
+  (+ (translate item) " += " (translate increment)))
 
 (mac ++ (item)
-  (concat "((" (translate item) ")++)"))
+  (+ "((" (translate item) ")++)"))
 
 ; sibilant won't compile if you try and call this --
 (mac dec (item)
-  (concat "((" (translate item) ")--)"))
+  (+ "((" (translate item) ")--)"))
 
-(mac get (arr i) (concat "(" (translate arr) ")[" (translate i) "]"))
+(mac get (arr i) (+ "(" (translate arr) ")[" (translate i) "]"))
 
 (mac set (arr &rest kv-pairs)
   (join "\n" (bulk-map kv-pairs
