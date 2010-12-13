@@ -15,7 +15,7 @@
   (each-key key global (set context key (get global key)))
   context)
 
-(assign context (create-context))
+(= context (create-context))
 
 (stream.on 'data (fn (data) (readline.write data)))
 
@@ -34,28 +34,28 @@
 
        (try
 	(do
-	  (assign cmd-buffer (concat cmd-buffer cmd))
+	  (= cmd-buffer (concat cmd-buffer cmd))
 	  (each (stmt) (sibilant.tokenize cmd-buffer)
-		(assign js-line (concat js-line
+		(= js-line (concat js-line
 				      (sibilant.translate stmt 'statement))))
 	  (var result (script.run-in-context js-line context "sibilant-repl"))
 	  (set readline.history 0 cmd-buffer)
 	  (when (defined? result)
-	    (assign flushed
+	    (= flushed
 		  (stream.write (concat "result: "
 					(sys.inspect result) "\n"))))
 	  (set context "_" result)
-	  (assign cmd-buffer ""))
+	  (= cmd-buffer ""))
 	(do
 	  (if (e.message.match "unexpected EOF")
-	      (do (assign cmd-buffer (concat cmd-buffer " "))
+	      (do (= cmd-buffer (concat cmd-buffer " "))
 		     (readline.history.shift))
 	    (do (set readline.history 0 cmd-buffer)
-		   (assign flushed (stream.write e.message)
+		   (= flushed (stream.write e.message)
 			 cmd-buffer "")))))
        
        (if flushed (display-prompt)
-	 (assign display-prompt-on-drain true))))
+	 (= display-prompt-on-drain true))))
 
 (readline.on 'close stream.destroy)
 
@@ -63,7 +63,7 @@
     (fn ()
       (when display-prompt-on-drain
 	(display-prompt)
-	(assign display-prompt-on-drain false))))
+	(= display-prompt-on-drain false))))
 
 (display-prompt)
 

@@ -6,7 +6,7 @@
         context  (script.create-context))
 
 (def create-context ()
-  (assign context.initialized? true)
+  (= context.initialized? true)
   (set module 'filename (concat (process.cwd) "/exec"))
   (set context 'module  module
                'require require)
@@ -44,7 +44,7 @@
 	  data "")
 
 	(stdin.set-encoding "utf8")
-	(stdin.on 'data (fn (chunk) (assign data (concat data chunk))))
+	(stdin.on 'data (fn (chunk) (= data (concat data chunk))))
 	(stdin.on 'end (fn (&rest args)
 			 (run-in-sandbox (sibilant.translate-all data)))))
     (each (arg) args

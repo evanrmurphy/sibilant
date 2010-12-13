@@ -21,7 +21,7 @@
   (def takes-args? (item)
     (!= false (get config (label-for item))))
 
-  (assign default-label (synonym-lookup default-label)
+  (= default-label (synonym-lookup default-label)
 	current-label default-label)
 
   (def label-for (item)
@@ -30,22 +30,22 @@
   (def add-value (hash key value)
     (var current-value (get hash key))
     (when (undefined? current-value)
-      (assign current-value [])
+      (= current-value [])
       (set hash key current-value))
     (when (!= true value)
       (current-value.push value)))
 
   (def reset-label ()
-    (assign current-label default-label))
+    (= current-label default-label))
 
   (inject {} args
     (fn (return-hash item index)
       (if (== "--" item)
-          (assign after-break true)
+          (= after-break true)
           (if after-break
               (add-value return-hash 'after-break item)
               (if (label? item)
-                  (do (assign current-label (label-for item))
+                  (do (= current-label (label-for item))
                       (add-value return-hash current-label true)
                       (when (not (takes-args? item)) (reset-label)))
                   (do (add-value return-hash current-label item)

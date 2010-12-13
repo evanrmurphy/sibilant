@@ -16,7 +16,7 @@
   (var value start)
   (when (array? items)
       (each (item index) items
-	    (assign value (f value item index))))
+	    (= value (f value item index))))
   value)
 
 (def map (items f)
@@ -39,7 +39,7 @@
 
   (until (or (== items.length index) return-item)
     (when (f (get items index) index)
-      (assign return-item (get items index)))
+      (= return-item (get items index)))
     (++ index)))
 
 (def reject (items f)
