@@ -12,7 +12,7 @@
      'special-open-paren "('?\\()"
      'close-paren        "(\\))"
      'alternative-parens "\\{|\\[|\\}|\\]"
-     'special-literal    (concat sibilant.tokens.special
+     'special-literal    (+ sibilant.tokens.special
                                  sibilant.tokens.literal))
 
 (set sibilant 'token-precedence
@@ -38,7 +38,7 @@
               (specials.shift)
               (parse-stack.shift)
               (when (zero? parse-stack.length)
-                (throw (concat "unbalanced parens:\n"
+                (throw (+ "unbalanced parens:\n"
                                (call inspect parse-stack)))))
 
             (def handle-token (token)
@@ -62,7 +62,7 @@
                       ("[" (increase-nesting) (accept-token 'list))
                       
                       (default
-                          (if (token.match (regex (concat "^" sibilant.tokens.number "$")))
+                          (if (token.match (regex (+ "^" sibilant.tokens.number "$")))
                               (accept-token (parse-float token))
                               (accept-token token))))
 
@@ -87,7 +87,7 @@
 (force-semi)
 
 (def indent (&rest args)
-  (concat
+  (+
    (chain (compact args)
           (join "\n")
           (replace /^/ "\n")
@@ -105,7 +105,7 @@
 
 (set macros 'return
      (fn (token)
-         (var= default-return (concat "return " (translate token)))
+         (var= default-return (+ "return " (translate token)))
          
          (if (array? token)
              (switch (first token)
@@ -113,12 +113,12 @@
                      ('delete
                       (var= delete-macro (get macros 'delete))
                       (if (< token.length 3) default-return
-                          (concat (apply delete-macro (token.slice 1 -1))
+                          (+ (apply delete-macro (token.slice 1 -1))
                                   "\nreturn "
                                   (delete-macro (last token)))))
                      ('=
                       (if (< token.length 4) default-return
-                          (concat (apply (get macros '=)
+                          (+ (apply (get macros '=)
                                          (token.slice 1 (- token.length 2)))
                                   "\nreturn "
                                   (apply (get macros '=) (token.slice -2)))))
@@ -130,7 +130,7 @@
                                 return-part (token.slice -2))
                            (non-return-part.unshift obj)
                             (return-part.unshift obj)
-                            (concat (apply macros.set non-return-part)
+                            (+ (apply macros.set non-return-part)
                                     "\nreturn "
                                     (apply macros.set return-part)))))
                      (default default-return))
@@ -138,7 +138,7 @@
 
 
 (def macros.statement (&rest args)
-  (concat (apply macros.call args) ";\n"))
+  (+ (apply macros.call args) ";\n"))
 
 (def macros.do (&rest body)
   (var= last-index (-math.max 0 (- body.length 1)))
@@ -147,16 +147,16 @@
 
   (join "\n"
         (map body (fn (arg)
-                      (concat (translate arg) ";")))))
+                      (+ (translate arg) ";")))))
 
 (def macros.call (f-name &rest args)
-  (concat (translate f-name)
+  (+ (translate f-name)
           "(" (join ", " (map args translate)) ")"))
 
 (def macros.def (f-name &rest args-and-body)
   (var= f-name-tr (translate f-name)
        start (if (/\./ f-name-tr) "" "var "))
-  (concat start f-name-tr " = "
+  (+ start f-name-tr " = "
           (apply macros.fn args-and-body)
           ";\n"))
 
@@ -164,12 +164,16 @@
   (var= js (apply macros.fn args-and-body)
        name (translate name))
   (try (set macros name (eval js))
-       (error (concat "error in parsing macro "
+       (error (+ "error in parsing macro "
                       name ":\n" (indent js))))
   undefined)
 
 (def macros.concat (&rest args)
   (concat "(" (join " + " (map args translate)) ")"))
+
+(= (get macros '+)
+   (fn (&rest args)
+     (+ "(" (join " + " (map args translate)) ")")))
 
 (def transform-args (arglist)
   (var= last undefined
@@ -181,7 +185,7 @@
              (= last null))))
 
   (when last
-    (error (concat "unexpected argument modifier: " last)))
+    (error (+ "unexpected argument modifier: " last)))
 
   args)
 
@@ -201,28 +205,28 @@
         (when (== (first arg) 'optional)
           (=
            args-string
-           (concat
+           (+
             args-string
             "if (arguments.length < "
             (- args.length optional-count) ")"
             " // if " (translate (second arg)) " is missing"
             (indent
-             (concat "var "
+             (+ "var "
                      (chain
                       (map (args.slice (+ option-index 1))
                            (fn (arg arg-index)
-                               (concat (translate (second arg)) " = "
+                               (+ (translate (second arg)) " = "
                                        (translate (second (get args
                                                                (+ option-index
                                                                   arg-index)))))))
                       (reverse)
-                      (concat (concat (translate (second arg)) " = undefined"))
+                      (concat (+ (translate (second arg)) " = undefined"))
                       (join ", "))
                      ";"))))
           (++ optional-count)))
 
   (if (defined? rest)
-      (concat args-string
+      (+ args-string
               "var " (translate (second rest))
               " = Array.prototype.slice.call(arguments, "
               args.length ");\n")
@@ -230,11 +234,11 @@
 
 (def build-comment-string (args)
   (if (empty? args) ""
-      (concat "// "
+      (+ "// "
               (join " "
                     (map args
                          (fn (arg)
-                             (concat (translate (second arg)) ":" (first arg))))))))
+                             (+ (translate (second arg)) ":" (first arg))))))))
 
 ;; brain 'splode
 (def macros.fn (arglist &rest body)
@@ -250,47 +254,49 @@
   (when (and (== (typeof (first body)) 'string)
              (send (first body) match /^".*"$/))
     (= doc-string
-       (concat "/* " (eval (body.shift)) " */\n")))
+       (+ "/* " (eval (body.shift)) " */\n")))
 
   (var= no-rest-args (if rest (args.slice 0 -1) args)
        args-string (build-args-string no-rest-args rest)
        comment-string (build-comment-string args))
 
-  (concat "(function("
+  (+ "(function("
           (join ", " (map args (fn (arg) (translate (second arg)))))
           ") {"
           (indent comment-string doc-string args-string
                   (join "\n"
                         (map body
                              (fn (stmt)
-                                 (concat (translate stmt) ";")))))
+                                 (+ (translate stmt) ";")))))
           "})"))
 
 (def macros.quote (item)
   (if (== "Array" item.constructor.name)
-      (concat "[ " (join ", " (map item macros.quote)) " ]")
+      (+ "[ " (join ", " (map item macros.quote)) " ]")
       (if (== 'number (typeof item)) item
-          (concat "\"" (literal item) "\""))))
+          (+ "\"" (literal item) "\""))))
 
 (def macros.hash (&rest pairs)
   (when (odd? pairs.length)
-    (error (concat
+    (error (+
             "odd number of key-value pairs in hash: "
             (call inspect pairs))))
   (var= pair-strings
        (bulk-map pairs (fn (key value)
-                           (concat (translate key) ": "
+                           (+ (translate key) ": "
                                    (translate value)))))
   (if (>= 1 pair-strings.length)
-      (concat "{ " (join ", " pair-strings) " }")
-      (concat "{" (indent (join ",\n" pair-strings)) "}")))
+      (+ "{ " (join ", " pair-strings) " }")
+      (+ "{" (indent (join ",\n" pair-strings)) "}")))
 
 
 (def literal (string)
   (inject (chain string
                  (replace /\*/g "_")
                  (replace /\?$/ "__QUERY")
-                 (replace /!$/  "__BANG"))
+                 (replace /!$/  "__BANG")
+                 (replace /\+/  "__PLUS")
+                 )
           (string.match /-(.)/g)
           (fn (return-string match)
               (return-string.replace match
@@ -310,14 +316,14 @@
              (apply (get macros (translate (first token))) (token.slice 1))
              (apply (get macros (or hint 'call)) token))
          (if (and (string? token)
-                  (token.match (regex (concat "^" sibilant.tokens.literal "$"))))
+                  (token.match (regex (+ "^" sibilant.tokens.literal "$"))))
              (literal token)
              (if (and (string? token) (token.match (regex "^;")))
                  (token.replace (regex "^;+") "//")
                  (if (and (string? token) (== "\"" (first token) (last token)))
                      (chain token (split "\n") (join "\\n\" +\n\""))
                      token))))
-     (error (concat e.stack "\n"
+     (error (+ e.stack "\n"
                     "Encountered when attempting to process:\n"
                     (indent (call inspect token)))))))
 
@@ -328,7 +334,7 @@
   (var= buffer "")
   (each (token) (tokenize contents)
         (var= line (translate token "statement"))
-        (when line (= buffer (concat buffer line "\n"))))
+        (when line (= buffer (+ buffer line "\n"))))
   buffer)
 
 (set sibilant 'translate-all translate-all)

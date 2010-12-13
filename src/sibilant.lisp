@@ -6,7 +6,7 @@
 
 (import (require "sibilant/functional"))
 
-(include (concat **dirname "/../src/core.lisp"))
+(include (+ **dirname "/../src/core.lisp"))
 
 (def include (file)
   (var= fs (require 'fs)
@@ -21,15 +21,15 @@
 (def sibilant.package-info ()
   (var= fs (require 'fs)
     json (meta "JSON"))
-  (json.parse (fs.read-file-sync (concat **dirname "/../package.json"))))
+  (json.parse (fs.read-file-sync (+ **dirname "/../package.json"))))
 
 (def sibilant.version-string ()
   (var= package (sibilant.package-info)
     path (require 'path))
-  (concat package.name " version " package.version
+  (+ package.name " version " package.version
 		       "\n(at " (path.join **dirname "..") ")"))
 
 (def sibilant.version ()
   (get (sibilant.package-info) 'version))
 
-(sibilant.include (concat **dirname "/macros.lisp"))
+(sibilant.include (+ **dirname "/macros.lisp"))
