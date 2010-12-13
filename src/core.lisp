@@ -118,10 +118,10 @@
                               (delete-macro (last token)))))
 		   ('assign
 		    (if (< token.length 4) default-return
-		      (concat (apply macros.assign
+		      (concat (apply (get macros '=)
 				     (token.slice 1 (- token.length 2)))
 			      "\nreturn "
-			      (apply macros.assign (token.slice -2)))))
+			      (apply (get macros '=) (token.slice -2)))))
 		   ('set
 		    (if (< token.length 5) default-return
 		      (do
