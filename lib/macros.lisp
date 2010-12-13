@@ -43,21 +43,21 @@
 (mac set (arr &rest kv-pairs)
   (join "\n" (bulk-map kv-pairs
 		       (fn (k v)
-			 (concat "(" (translate arr) ")"
+			 (+ "(" (translate arr) ")"
 				 "[" (translate k) "] = " (translate v) ";")))))
 				       
 (mac send (object method &rest args)
-  (concat (translate object) "." (translate method)
+  (+ (translate object) "." (translate method)
 	  "(" (join ", " (map args translate)) ")"))
 
 (mac new (fn)
-  (concat "(new " (translate fn) ")"))
+  (+ "(new " (translate fn) ")"))
 
 (mac regex (string &optional glim)
   ((get macros 'new) (macros.call "RegExp" string (or glim "undefined"))))
 
 (mac timestamp ()
-  (concat "\"" (send (new (-date)) to-string) "\""))
+  (+ "\"" (send (new (-date)) to-string) "\""))
 
 (mac comment (&rest contents)
   (map contents
