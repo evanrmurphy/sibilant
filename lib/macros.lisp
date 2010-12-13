@@ -1,5 +1,5 @@
 (mac cons (first rest)
-  (macros.send (macros.list first) 'concat rest))
+  (macros.send (macros.list first) 'concat rest)) ; s/concat/\+/ doesn't compile
 
 (mac join (glue arr)
   (+ "(" (translate arr) ").join(" (translate glue) ")"))
@@ -140,34 +140,34 @@
 
 (mac == (first-thing &rest other-things)
   (var= translated-first-thing (translate first-thing))
-  (concat "("
+  (+ "("
           (join " &&\n "
                 (map other-things
                      (fn (thing)
-                       (concat translated-first-thing
+                       (+ translated-first-thing
                                " === "
                                (translate thing)))))
           ")"))
 
 (mac string? (thing)
-  (concat "typeof(" (translate thing) ") === \"string\""))
+  (+ "typeof(" (translate thing) ") === \"string\""))
 
 (mac array? (thing)
-  (var= translated (concat "(" (translate thing) ")"))
-  (concat translated " && "
+  (var= translated (+ "(" (translate thing) ")"))
+  (+ translated " && "
 	  translated ".constructor.name === \"Array\""))
 
 (mac when (arg &rest body)
-  (concat
+  (+
    "(function() {"
-   (indent (concat
+   (indent (+
 	    "if (" (translate arg) ") {"
 	    (indent (apply macros.do body))
 	    "};"))
    "})()"))
 
 (mac not (exp)
-  (concat "(!" (translate exp) ")"))
+  (+ "(!" (translate exp) ")"))
 
 (mac slice (arr start &optional end)
   (macros.send (translate arr) "slice" start end))
@@ -176,7 +176,7 @@
   (join " + \"\\n\" + "
    (map args
 	(fn (arg)
-	  (concat "\"" arg ":\" + " (translate arg))))))
+	  (+ "\"" arg ":\" + " (translate arg))))))
 
 (mac each (item array &rest body)
   (macros.send (translate array) 'for-each
@@ -185,11 +185,11 @@
 (mac = (&rest args)
   (join "\n"
 	(bulk-map args (fn (name value)
-			 (concat (translate name) " = "
+			 (+ (translate name) " = "
 				 (translate value) ";")))))
 
 (mac macro-list ()
-  (concat "["
+  (+ "["
 	  (indent (join ",\n"
 			(map (-object.keys macros)
 			     macros.quote)))
@@ -198,31 +198,31 @@
 (mac macex (name)
   (var= macro (get macros (translate name)))
   (if macro
-      (concat "// macro: " name "\n" (send macro to-string))
+      (+ "// macro: " name "\n" (send macro to-string))
     "undefined"))
 
 (mac throw (&rest string)
-  (concat "throw new Error (" (join " " (map string translate)) ")"))
+  (+ "throw new Error (" (join " " (map string translate)) ")"))
 
 (mac as-boolean (expr)
-  (concat "(!!(" (translate expr) "))"))
+  (+ "(!!(" (translate expr) "))"))
 
-(mac force-semi () (concat ";\n"))
+(mac force-semi () (+ ";\n"))
 
 (mac chain (object &rest calls)
-  (concat (translate object) " // chain"
+  (+ (translate object) " // chain"
 	  (indent (join "\n"
 		(map calls
 		     (fn (call, index)
 		       (var= method (first call))
 		       (var= args (rest call))
-		       (concat "." (translate method)
+		       (+ "." (translate method)
 			       "(" (join ", " (map args translate)) ")")))))))
 
 (mac try (tryblock catchblock)
-  (concat
+  (+
    "(function() {"
-   (indent (concat
+   (indent (+
 	    "try {"
 	    (indent (macros.do tryblock))
 	    "} catch (e) {"
@@ -233,7 +233,7 @@
 (mac while (condition &rest block)
   (macros.scoped
    ((get macros 'var=) '**return-value**)
-   (concat "while (" (translate condition) ") {"
+   (+ "while (" (translate condition) ") {"
            (indent ((get macros '=) '**return-value**
                                 (apply macros.scoped block))))
    "}"
@@ -252,7 +252,7 @@
 
 (mac delete (&rest objects)
   (join "\n" (map objects (fn (obj)
-                            (concat "delete " (translate obj) ";")))))
+                            (+ "delete " (translate obj) ";")))))
 
 (mac delmac (macro-name)
   (delete (get macros (translate macro-name))) "")
@@ -267,9 +267,9 @@
   (macros.call (apply macros.thunk body)))
 
 (mac each-key (as obj &rest body)
-  (concat "(function() {"
+  (+ "(function() {"
 	  (indent
-	   (concat "for (var " (translate as) " in " (translate obj) ") "
+	   (+ "for (var " (translate as) " in " (translate obj) ") "
 		   (apply macros.scoped body)
 		   ";"))
 	  "})();"))
@@ -281,7 +281,7 @@
 
   ;; the complexity of this macro indicates there's a problem
   ;; I'm not quite sure where to fix this, but it has to do with quoting.
-  (var= lines (list (concat "switch(" (translate obj) ") {")))
+  (var= lines (list (+ "switch(" (translate obj) ") {")))
   (each (case-def) cases
 	(var= case-name (first case-def))
 	(when (and (array? case-name)
@@ -294,17 +294,18 @@
 	(var= case-string
 	  (if (array? case-name)
 	      (join "\n" (map case-name (fn (c)
-					  (concat "case " (translate c) ":"))))
+					  (+ "case " (translate c) ":"))))
 	    (if (== 'default case-name) "default:"
-	      (concat "case " (translate case-name) ":"))))
+	      (+ "case " (translate case-name) ":"))))
 	
-	(lines.push (concat case-string
+	(lines.push (+ case-string
 			    (indent (apply macros.do (case-def.slice 1))))))
 
   ; the following two lines are to get the whitespace right
   ; this is necessary because switches are indented weird
   (set lines (- lines.length 1)
-       (chain (get lines (- lines.length 1)) (concat "}")))
+       (chain (get lines (- lines.length 1))
+              (concat "}"))) ; s/concat/\+/ doesn't compile
 
-  (concat "(function() {" (apply indent lines) "})()"))
+  (+ "(function() {" (apply indent lines) "})()"))
 
