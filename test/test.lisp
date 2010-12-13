@@ -1,6 +1,6 @@
 #!/usr/bin/env sibilant -x
 
-(var sibilant (require "../lib/sibilant")
+(var= sibilant (require "../lib/sibilant")
         sys      (require 'sys)
         passes   0
         fails    0)
@@ -169,7 +169,7 @@ delete bam.bibble;")
 
 
 
-(assert-translation "(var a b c d)" "var a = b,\n    c = d;")
+(assert-translation "(var= a b c d)" "var a = b,\n    c = d;")
 
 (assert-translation "(function? x)" "typeof(x) === 'function'")
 
@@ -339,8 +339,8 @@ afterInclude2();")
 
 
 (scoped
- (var i 0)
- (var return-string
+ (var= i 0)
+ (var= return-string
    (while (< i 10)
      (= i (+ i 1))
      (concat "stopped at iteration: " i)))

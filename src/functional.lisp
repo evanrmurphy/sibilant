@@ -1,49 +1,49 @@
-(var functional exports)
+(var= functional exports)
 
 (def bulk-map (arr f)
-  (var index 0
-    group-size f.length
-    ret-arr [])
-
+  (var= index      0
+        group-size f.length
+        ret-arr    [])
   (while (< index arr.length)
     (send ret-arr push
-	  (apply f (send arr slice
-			  index (+ index group-size))))
+          (apply f (send arr slice
+                         index (+ index group-size))))
     (+= index group-size))
   ret-arr)
 
 (def inject (start items f)
-  (var value start)
+  (var= value start)
   (when (array? items)
-      (each (item index) items
-	    (= value (f value item index))))
+    (each (item index) items
+      (= value (f value item index))))
   value)
 
 (def map (items f)
-  (inject [] items
-	  (fn (collector item index)
-	    (send collector push (f item index))
-	    collector)))
+  (inject
+    [] items
+    (fn (collector item index)
+      (send collector push (f item index))
+      collector)))
 
 (def select (items f)
-  (inject [] items
-	  (fn (collector item index)
-	    (when (f item index)
-	      (send collector push item))
-	    collector)))
+  (inject
+    [] items
+    (fn (collector item index)
+      (when (f item index)
+        (send collector push item))
+      collector)))
 
 (def detect (items f)
-  (var return-item undefined
-    index 0
-    items items)
-
+  (var= return-item undefined
+        index       0
+        items       items)
   (until (or (== items.length index) return-item)
     (when (f (get items index) index)
       (= return-item (get items index)))
     (++ index)))
 
 (def reject (items f)
-  (def args [ items f ])
+  (def args [items f])
   (select items (fn () (not (apply f args)))))
 
 (def compact (arr)
@@ -51,9 +51,9 @@
 
 (each (export-function)
       '(inject map select detect reject compact bulk-map)
-      (set exports export-function
-	   (eval export-function)))
-		  
-     
+  (set exports export-function
+       (eval export-function)))
 
-		      
+
+
+

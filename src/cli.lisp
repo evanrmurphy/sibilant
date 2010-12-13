@@ -1,4 +1,4 @@
-(var sibilant (require 'sibilant)
+(var= sibilant (require 'sibilant)
         path     (require 'path)
 	options  (require "sibilant/options")
         fs       (require 'fs)
@@ -40,7 +40,7 @@
 (def cli.eval (&rest args)
   (if (empty? args)
       (do
-	(var stdin (process.open-stdin)
+	(var= stdin (process.open-stdin)
 	  data "")
 
 	(stdin.set-encoding "utf8")
@@ -113,9 +113,9 @@ $ sibilant --repl
 
 "))
 
-(var cli-options (options cli))
+(var= cli-options (options cli))
 
-(var args (or cli-options.after-break []))
+(var= args (or cli-options.after-break []))
 
 
 (args.unshift (second process.argv) "FILENAME")
@@ -124,7 +124,7 @@ $ sibilant --repl
 (when (empty? (keys cli-options))
   (cli.repl))
 
-(var output-dir
+(var= output-dir
   (when cli-options.output (first cli-options.output)))
 
 (def strip-shebang (data)
@@ -134,12 +134,12 @@ $ sibilant --repl
   (sibilant.translate-all (strip-shebang (fs.read-file-sync file-name "utf8"))))
 
 (each (input-file) (or cli-options.input [])
-      (var input-path (path.join (process.cwd) input-file)
+      (var= input-path (path.join (process.cwd) input-file)
            translated (sibilant.translate-file input-path))
       
       (if output-dir
 	  (do
-	    (var
+	    (var=
 	      input-basename (path.basename input-path ".lisp")
 	      output-path (concat (path.join output-dir input-basename) ".js"))
 	    (fs.write-file output-path translated))

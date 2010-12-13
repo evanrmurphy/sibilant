@@ -1,9 +1,9 @@
-(var import (require "sibilant/import"))
+(var= import (require "sibilant/import"))
 
 (import (require "sibilant/functional"))
 
 (def extract-options (config &optional args)
-  (var args (or args (process.argv.slice 2))
+  (var= args (or args (process.argv.slice 2))
     default-label 'unlabeled
     current-label default-label
     after-break false
@@ -13,7 +13,7 @@
   (def label? (item) (and (string? item) (send /^-/ test item)))
 
   (def synonym-lookup (item)
-    (var config-entry (get config item))
+    (var= config-entry (get config item))
     (if (string? config-entry)
 	(synonym-lookup config-entry)
       item))
@@ -28,7 +28,7 @@
     (synonym-lookup (item.replace /^-+/ "")))
 
   (def add-value (hash key value)
-    (var current-value (get hash key))
+    (var= current-value (get hash key))
     (when (undefined? current-value)
       (= current-value [])
       (set hash key current-value))
@@ -53,10 +53,10 @@
       return-hash)))
 
 (def process-options (&optional config)
-  (var options (extract-options config))
+  (var= options (extract-options config))
   (when config
     (def handle-pair (key value)
-       (var handle (get config key))
+       (var= handle (get config key))
        (when (string? handle) (handle-pair handle value))
        (when (function? handle) (apply handle value)))
      (send (keys options) for-each

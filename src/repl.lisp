@@ -1,4 +1,4 @@
-(var stream     (process.open-stdin)
+(var= stream     (process.open-stdin)
         script     (get (process.binding 'evals) "Script")
         readline   (send (require 'readline) create-interface stream)
 	sibilant   (require (concat **dirname "/sibilant"))
@@ -8,7 +8,7 @@
 	display-prompt-on-drain false)
 
 (def create-context ()
-  (var context (script.create-context))
+  (var= context (script.create-context))
   (set module 'filename (concat (process.cwd) "/exec"))
   (set context 'module  module
                'require require)
@@ -29,7 +29,7 @@
 
 (readline.on 'line
      (fn (cmd)
-       (var js-line ""
+       (var= js-line ""
 	 flushed true)
 
        (try
@@ -38,7 +38,7 @@
 	  (each (stmt) (sibilant.tokenize cmd-buffer)
 		(= js-line (concat js-line
 				      (sibilant.translate stmt 'statement))))
-	  (var result (script.run-in-context js-line context "sibilant-repl"))
+	  (var= result (script.run-in-context js-line context "sibilant-repl"))
 	  (set readline.history 0 cmd-buffer)
 	  (when (defined? result)
 	    (= flushed

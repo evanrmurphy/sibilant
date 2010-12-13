@@ -127,8 +127,7 @@
 	    "};"))
    "})()"))
 
-
-(mac var (&rest pairs)
+(mac var= (&rest pairs)
   (concat
     "var "
     (join
@@ -140,7 +139,7 @@
 	  ";"))
 
 (mac == (first-thing &rest other-things)
-  (var translated-first-thing (translate first-thing))
+  (var= translated-first-thing (translate first-thing))
   (concat "("
           (join " &&\n "
                 (map other-things
@@ -154,7 +153,7 @@
   (concat "typeof(" (translate thing) ") === \"string\""))
 
 (mac array? (thing)
-  (var translated (concat "(" (translate thing) ")"))
+  (var= translated (concat "(" (translate thing) ")"))
   (concat translated " && "
 	  translated ".constructor.name === \"Array\""))
 
@@ -197,7 +196,7 @@
 	  "]"))
 
 (mac macex (name)
-  (var macro (get macros (translate name)))
+  (var= macro (get macros (translate name)))
   (if macro
       (concat "// macro: " name "\n" (send macro to-string))
     "undefined"))
@@ -215,8 +214,8 @@
 	  (indent (join "\n"
 		(map calls
 		     (fn (call, index)
-		       (var method (first call))
-		       (var args (rest call))
+		       (var= method (first call))
+		       (var= args (rest call))
 		       (concat "." (translate method)
 			       "(" (join ", " (map args translate)) ")")))))))
 
@@ -233,7 +232,7 @@
 
 (mac while (condition &rest block)
   (macros.scoped
-   (macros.var '**return-value**)
+   ((get macros 'var=) '**return-value**)
    (concat "while (" (translate condition) ") {"
            (indent ((get macros '=) '**return-value**
                                 (apply macros.scoped block))))
@@ -259,7 +258,7 @@
   (delete (get macros (translate macro-name))) "")
 
 (mac defhash (name &rest pairs)
-  (macros.var name (apply macros.hash pairs)))
+  ((get macros 'var=) name (apply macros.hash pairs)))
 
 (mac arguments ()
   "(Array.prototype.slice.apply(arguments))")
@@ -282,17 +281,17 @@
 
   ;; the complexity of this macro indicates there's a problem
   ;; I'm not quite sure where to fix this, but it has to do with quoting.
-  (var lines (list (concat "switch(" (translate obj) ") {")))
+  (var= lines (list (concat "switch(" (translate obj) ") {")))
   (each (case-def) cases
-	(var case-name (first case-def))
+	(var= case-name (first case-def))
 	(when (and (array? case-name)
 		   (== (first case-name) 'quote))
-	  (var second (second case-name))
+	  (var= second (second case-name))
 	  (= case-name (if (array? second)
 			      (map second macros.quote)
 			    (macros.quote second))))
 	
-	(var case-string
+	(var= case-string
 	  (if (array? case-name)
 	      (join "\n" (map case-name (fn (c)
 					  (concat "case " (translate c) ":"))))
