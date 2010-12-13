@@ -241,7 +241,7 @@
   (macros.scoped
    (macros.var '**return-value**)
    (concat "while (" (translate condition) ") {"
-           (indent (macros.assign '**return-value**
+           (indent ((get macros '=) '**return-value**
                                 (apply macros.scoped block))))
    "}"
    '**return-value**))
