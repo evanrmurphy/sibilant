@@ -306,7 +306,7 @@ afterInclude2();")
 			     (7 "doesn't match because it's second")
 			     (default 10)))
 
-(assert-translation "(thunk (assign b c d e))"
+(assert-translation "(thunk (= b c d e))"
 "(function() {
   b = c;
   return d = e;;
@@ -342,7 +342,7 @@ afterInclude2();")
  (var i 0)
  (var return-string
    (while (< i 10)
-     (assign i (+ i 1))
+     (= i (+ i 1))
      (concat "stopped at iteration: " i)))
  (assert-equal "stopped at iteration: 10" return-string))
 

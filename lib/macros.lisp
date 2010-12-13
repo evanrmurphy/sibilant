@@ -183,12 +183,6 @@
   (macros.send (translate array) 'for-each
 	(apply macros.fn (cons item body))))
 
-(mac assign (&rest args)
-  (join "\n"
-	(bulk-map args (fn (name value)
-			 (concat (translate name) " = "
-				 (translate value) ";")))))
-
 (mac = (&rest args)
   (join "\n"
 	(bulk-map args (fn (name value)
@@ -294,7 +288,7 @@
 	(when (and (array? case-name)
 		   (== (first case-name) 'quote))
 	  (var second (second case-name))
-	  (assign case-name (if (array? second)
+	  (= case-name (if (array? second)
 			      (map second macros.quote)
 			    (macros.quote second))))
 	
