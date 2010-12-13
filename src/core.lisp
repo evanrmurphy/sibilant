@@ -116,7 +116,7 @@
                       (concat (apply delete-macro (token.slice 1 -1))
                               "\nreturn "
                               (delete-macro (last token)))))
-		   ('assign
+		   ('=
 		    (if (< token.length 4) default-return
 		      (concat (apply (get macros '=)
 				     (token.slice 1 (- token.length 2)))
