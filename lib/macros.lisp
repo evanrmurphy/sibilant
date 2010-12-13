@@ -189,6 +189,12 @@
 			 (concat (translate name) " = "
 				 (translate value) ";")))))
 
+(mac = (&rest args)
+  (join "\n"
+	(bulk-map args (fn (name value)
+			 (concat (translate name) " = "
+				 (translate value) ";")))))
+
 (mac macro-list ()
   (concat "["
 	  (indent (join ",\n"
