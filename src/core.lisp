@@ -1,23 +1,23 @@
-(set sibilant 'tokens {})
+(= sibilant.tokens {})
 
 (set sibilant.tokens
-     'regex              "(\\/(\\\\\\\/|[^\\/\\n])+\\/[glim]*)"
-     'comment            "(;.*)"
-     'string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
-     'number             "(-?[0-9.]+)"
-     'literal            "([*.$a-zA-Z-=+][*.a-zA-Z0-9-=+]*(\\?|!)?)"
-     'special            "([&']?)"
-     'other-char         "([><=!\\+\\/\\*-]+)"
-     'open-paren         "(\\()"
-     'special-open-paren "('?\\()"
-     'close-paren        "(\\))"
-     'alternative-parens "\\{|\\[|\\}|\\]"
-     'special-literal    (+ sibilant.tokens.special
+      'regex              "(\\/(\\\\\\\/|[^\\/\\n])+\\/[glim]*)"
+      'comment            "(;.*)"
+      'string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
+      'number             "(-?[0-9.]+)"
+      'literal            "([*.$a-zA-Z-=+][*.a-zA-Z0-9-=+]*(\\?|!)?)"
+      'special            "([&']?)"
+      'other-char         "([><=!\\+\\/\\*-]+)"
+      'open-paren         "(\\()"
+      'special-open-paren "('?\\()"
+      'close-paren        "(\\))"
+      'alternative-parens "\\{|\\[|\\}|\\]"
+      'special-literal    (+ sibilant.tokens.special
                             sibilant.tokens.literal))
 
-(set sibilant 'token-precedence
-     '(regex comment string number special-literal other-char
-       special-open-paren close-paren alternative-parens))
+(= sibilant.token-precedence
+   '(regex comment string number special-literal other-char
+     special-open-paren close-paren alternative-parens))
 
 (var= tokenize
   (= sibilant.tokenize
@@ -95,46 +95,47 @@
             (set object (first item) (get object (second item)))
             object)))
 
-(var= macros (hash))
-(set sibilant 'macros macros)
+(var= macros {})
 
-(set macros 'return
-     (fn (token)
-       (var= default-return
-             (+ "return " (translate token)))
-         
-       (if (array? token)
-            (switch (first token)
-              ('(return throw do)
-               (translate token))
-              ('delete
-               (var= delete-macro (get macros 'delete))
-               (if (< token.length 3)
-                    default-return
-                   (+ (apply delete-macro (token.slice 1 -1))
-                      "\nreturn "
-                      (delete-macro (last token)))))
-              ('=
-               (if (< token.length 4) default-return
-                    (+ (apply (get macros '=)
-                              (token.slice 1 (- token.length 2)))
-                       "\nreturn "
-                       (apply (get macros '=)
-                              (token.slice -2)))))
-              ('set
-               (if (< token.length 5) default-return
-                    (do (var= obj             (second token)
-                              non-return-part (token.slice 2 (- token.length 2))
-                              return-part     (token.slice -2))
-                        (non-return-part.unshift obj)
-                        (return-part.unshift obj)
-                        (+ (apply macros.set
-                                  non-return-part)
-                           "\nreturn "
-                           (apply macros.set
-                                  return-part)))))
-              (default default-return))
-            default-return)))
+(= sibilant.macros macros)
+
+(= macros.return
+   (fn (token)
+     (var= default-return
+           (+ "return " (translate token)))
+
+     (if (array? token)
+          (switch (first token)
+            ('(return throw do)
+             (translate token))
+            ('delete
+             (var= delete-macro (get macros 'delete))
+             (if (< token.length 3)
+                  default-return
+                 (+ (apply delete-macro (token.slice 1 -1))
+                    "\nreturn "
+                    (delete-macro (last token)))))
+            ('=
+             (if (< token.length 4) default-return
+                  (+ (apply (get macros '=)
+                            (token.slice 1 (- token.length 2)))
+                     "\nreturn "
+                     (apply (get macros '=)
+                            (token.slice -2)))))
+            ('set
+             (if (< token.length 5) default-return
+                  (do (var= obj             (second token)
+                            non-return-part (token.slice 2 (- token.length 2))
+                            return-part     (token.slice -2))
+                      (non-return-part.unshift obj)
+                      (return-part.unshift obj)
+                      (+ (apply macros.set
+                                non-return-part)
+                         "\nreturn "
+                         (apply macros.set
+                                return-part)))))
+            (default default-return))
+          default-return)))
 
 (def macros.statement (&rest args)
   (+ (apply macros.call args) ";\n"))
@@ -179,7 +180,7 @@
   (each (arg) arglist
     (if (== (first arg) "&")
          (= last (arg.slice 1))
-        (do (args.push [ (or last 'required) arg ])
+        (do (args.push [(or last 'required) arg])
             (= last null))))
   (if last
       (error (+ "unexpected argument modifier: " last)))
@@ -323,7 +324,7 @@
                (indent (call inspect token)))))))
 
 
-(set sibilant 'translate translate)
+(= sibilant.translate translate)
 
 (def translate-all (contents)
   (var= buffer "")
@@ -332,4 +333,4 @@
     (if line (= buffer (+ buffer line "\n"))))
   buffer)
 
-(set sibilant 'translate-all translate-all)
+(= sibilant.translate-all translate-all)
