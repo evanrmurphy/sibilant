@@ -95,7 +95,7 @@
             (set object (first item) (get object (second item)))
             object)))
 
-(var= macros (hash))
+(var= macros {})
 
 (= sibilant.macros macros)
 
@@ -180,7 +180,7 @@
   (each (arg) arglist
     (if (== (first arg) "&")
          (= last (arg.slice 1))
-        (do (args.push [ (or last 'required) arg ])
+        (do (args.push [(or last 'required) arg])
             (= last null))))
   (if last
       (error (+ "unexpected argument modifier: " last)))
@@ -324,7 +324,7 @@
                (indent (call inspect token)))))))
 
 
-(set sibilant 'translate translate)
+(= sibilant.translate translate)
 
 (def translate-all (contents)
   (var= buffer "")
@@ -333,4 +333,4 @@
     (if line (= buffer (+ buffer line "\n"))))
   buffer)
 
-(set sibilant 'translate-all translate-all)
+(= sibilant.translate-all translate-all)
