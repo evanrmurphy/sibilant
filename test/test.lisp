@@ -176,7 +176,6 @@ delete bam.bibble;")
 (assert-translation "(number? x)" "typeof(x) === 'number'")
 
 (assert-translation "(def foo.bar (a) (* a 2))" "foo.bar = (function(a) {
-  // a:required
   return (a * 2);
 });")
 
@@ -210,7 +209,6 @@ delete bam.bibble;")
 
 (assert-translation "(each (x) arr a b c)"
 "arr.forEach((function(x) {
-  // x:required
   a;
   b;
   return c;

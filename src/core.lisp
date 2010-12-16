@@ -204,15 +204,6 @@
          args.length ");\n")
       args-string))
 
-(def build-comment-string (args)
-  (if (empty? args)
-       ""
-      (+ "// "
-         (join " "
-               (map args
-                    (fn (arg)
-                      (+ (translate (second arg)) ":" (first arg))))))))
-
 ;; brain 'splode
 (def macros.fn (arglist &rest body)
   (var= args (transform-args arglist)
@@ -231,13 +222,12 @@
          (+ "/* " (eval (body.shift)) " */\n")))
 
   (var= no-rest-args   (if rest (args.slice 0 -1) args)
-        args-string    (build-args-string no-rest-args rest)
-        comment-string (build-comment-string args))
+        args-string    (build-args-string no-rest-args rest))
 
   (+ "(function("
      (join ", " (map args (fn (arg) (translate (second arg)))))
      ") {"
-     (indent comment-string doc-string args-string
+     (indent doc-string args-string
              (join "\n"
                    (map body
                         (fn (stmt)
