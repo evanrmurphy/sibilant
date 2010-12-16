@@ -129,19 +129,6 @@ h3. Defining functions
 
 The last statement is always returned.
 
-h4. Optional arguments
-
-Sibilant supports optional arguments.  If an argument is preceded by @&optional@, it will be skipped if there are fewer than the total number of arguments.  Optional arguments are filled in from left to right.
-
-<pre><code>(def example (a &optional b c &optional d e)
- (... do something with a b c d e ...))
-
-(example 1 2 3)     ; these will be a c and e
-(example 1 2)       ; this will raise an exception
-(example 1 2 3 4)   ; these will be a b c e
-(example 1 2 3 4 5) ; these will be a b c d e
-</code></pre>
-
 h4. Variable arguments (varargs)
 
 Sibilant supports arbitrary-length arguments by way of the &rest label.  If an argument is preceded by @&rest@, any arguments beyond the named arguments will be put into the @&rest@ argument.  The @&rest@ argument *must* be the last argument currently.
@@ -154,13 +141,9 @@ Sibilant supports arbitrary-length arguments by way of the &rest label.  If an a
 (another-example 1 2 3 4 5) ; a will be 1, b will be 2, and everythingElse will be [3,4,5]
 </code></pre>
 
-h4. The interaction of &optional and &rest
-
-If both @&optional@ and @&rest@ arguments are used, the @&optionals@ are filled in before arguments spill over into @&rest@
-
 h3. Lambdas
 
-Lambdas are defined just like functions (with @&rest@ and @&optional@ args, if you so desire), but with the fn keyword.
+Lambdas are defined just like functions (with @&rest@ args, if you so desire), but with the fn keyword.
 
 In fact, @(def name (args) body)@ is functionally equivalent to @(var name (fn (args) body))@.
 

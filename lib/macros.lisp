@@ -54,7 +54,7 @@
 (mac new (fn)
   (+ "(new " (translate fn) ")"))
 
-(mac regex (string &optional glim)
+(mac regex (string glim)
   ((get macros 'new) (macros.call "RegExp" string (or glim "undefined"))))
 
 (mac timestamp ()
@@ -165,7 +165,7 @@
 (mac not (exp)
   (+ "(!" (translate exp) ")"))
 
-(mac slice (arr start &optional end)
+(mac slice (arr start end)
   (macros.send (translate arr) "slice" start end))
 
 (mac inspect (&rest args)

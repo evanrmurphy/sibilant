@@ -10,7 +10,7 @@
 (def trim (string)
   (send string trim))
 
-(def assert-equal (expected actual &optional message)
+(def assert-equal (expected actual message)
   (sys.print (if (== expected actual)
                   (do (++ passes) ".")
                  (do (++ fails)
@@ -188,15 +188,6 @@ delete bam.bibble;")
     return c;
   })();
 })();")
-
-(assert-translation "(fn (&optional first-arg second-arg) true)" "(function(firstArg, secondArg) {
-  // firstArg:optional secondArg:required
-  if (arguments.length < 2) // if firstArg is missing
-    var secondArg = firstArg, firstArg = undefined;
-  
-  return true;
-})")
-
 
 (assert-translation "(scoped a b c)"
 "(function() {

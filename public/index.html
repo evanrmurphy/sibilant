@@ -218,29 +218,6 @@ JSON
 ]]>
 </script>
 
-<script id="optional-arguments"
-	language="sibilant/example"
-	data-title="Optional arguments">
-<![CDATA[
-; Optional arguments are specified with
-; &optional. If there are fewer than the
-; total number of possible arguments,
-; optional arguments are skipped.  If
-; there are several, they are filled
-; from left to right.
-
-(def has-optional-arg (&optional optional-arg
-                         mandatory-arg)
-  (when (defined? optional-argument)
-    (alert "optional provided"))
-  mandatory-arg)
-
-(has-optional-arg "only one arg")
-(has-optional-arg true "return value")
-]]>
-</script>
-
-
 <script id="lambdas"
 	language="sibilant/example"
 	data-title="Lambdas">

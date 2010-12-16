@@ -12,7 +12,7 @@
                'require require)
   (each-key key global (set context key (get global key))))
 
-(def run-in-sandbox (js &optional input-path)
+(def run-in-sandbox (js input-path)
   (when (not context.initialized?) (create-context))
   (when (defined? input-path)
     (set process.argv 1 input-path)

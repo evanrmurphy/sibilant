@@ -195,30 +195,7 @@
 (var= reverse macros.reverse)
 
 (def build-args-string (args rest)
-  (var= args-string    ""
-        optional-count 0)
-
-  (each (arg option-index) args
-    (if (== (first arg) 'optional)
-        (= args-string
-           (+ args-string
-              "if (arguments.length < "
-              (- args.length optional-count) ")"
-              " // if " (translate (second arg)) " is missing"
-              (indent
-               (+ "var "
-                  (chain
-                    (map (args.slice (+ option-index 1))
-                         (fn (arg arg-index)
-                           (+ (translate (second arg)) " = "
-                              (translate (second (get args
-                                                      (+ option-index
-                                                         arg-index)))))))
-                    (reverse)
-                    (concat (+ (translate (second arg)) " = undefined"))
-                    (join ", "))
-                  ";"))))
-      (++ optional-count)))
+  (var= args-string "")
 
   (if (defined? rest)
       (+ args-string
