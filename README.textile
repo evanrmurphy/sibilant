@@ -112,9 +112,7 @@ h3. Defining a variable
 
 h3. Hashes
 
-<pre><code>
-  {key1 'value1  key2 'value2} ;=> {key1: "value1", key2: "value2"}
-</code></pre>
+<pre><code>{key1 'value1  key2 'value2} ;=> {key1: "value1", key2: "value2"}</code></pre>
 
 h3. Calling functions
 
