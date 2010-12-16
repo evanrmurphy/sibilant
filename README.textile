@@ -9,6 +9,8 @@ h2. Try it before you install
 
 "sibilantjs.info":http://sibilantjs.info includes an in-browser as-you-type sibilant compiler and tutorial, so you can get a sense of the language without leaving your browser.
 
+Note that the tutorial is for "upstream sibilant":https://github.com/jbr/sibilant, not the evanrmurphy fork.
+
 h2. Installation
 
 First, install "node.js":http://nodejs.org [ "github":http://github.com/ry/node ] and "npm":http://npmjs.org [ "github":http://github.com/isaacs/npm ].
@@ -99,9 +101,9 @@ h3. Quoting
 <pre><code>'(a b c d e f g) ;=> ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 'hello ;=> "hello"</code></pre>
 
-h4. Lists
+h3. Arrays
 
-<pre><code>(list 1 2 3 4 5) ;=> [1,2,3,4,5]</code></pre>
+<pre><code>[1 2 3 4 5] ;=> [1,2,3,4,5]</code></pre>
 
 
 h3. Defining a variable
@@ -110,8 +112,9 @@ h3. Defining a variable
 
 h3. Hashes
 
-<pre><code>(hash key1 'value1
-      key2 'value2) ;=> {key1: "value1", key2: "value2"}</code></pre>
+<pre><code>
+  {key1 'value1  key2 'value2} ;=> {key1: "value1", key2: "value2"}
+</code></pre>
 
 h3. Calling functions
 
@@ -141,9 +144,9 @@ Sibilant supports arbitrary-length arguments by way of the &rest label.  If an a
 (another-example 1 2 3 4 5) ; a will be 1, b will be 2, and everythingElse will be [3,4,5]
 </code></pre>
 
-h3. Lambdas
+h3. Anonymous functions
 
-Lambdas are defined just like functions (with @&rest@ args, if you so desire), but with the fn keyword.
+Anonymous functions are defined just like functions (with @&rest@ args, if you so desire), but with the fn keyword.
 
 In fact, @(def name (args) body)@ is functionally equivalent to @(var name (fn (args) body))@.
 
@@ -180,6 +183,5 @@ h3. When
 
 h2. Examples
 
-The most up to date documentation will always be "sibilantjs.info":http://sibilantjs.info which includes an as-you-type in-browser sibilant compiler.
-Check out "sibilant itself, which is written 100% in sibilant":http://github.com/jbr/sibilant/tree/master/src/ to get a sense of what's possible.
-Also, check out "macros.lisp":http://github.com/jbr/sibilant/blob/master/lib/macros.lisp to see how easy it is to write new compiler macros.
+Check out "sibilant itself, which is written 100% in sibilant":http://github.com/evanrmurphy/sibilant/tree/master/src/ to get a sense of what's possible.
+Also, check out "macros.lisp":http://github.com/evanrmurphy/sibilant/blob/master/lib/macros.lisp to see how easy it is to write new compiler macros.
