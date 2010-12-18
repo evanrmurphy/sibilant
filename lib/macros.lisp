@@ -253,8 +253,8 @@
   (delete (get macros (translate macro-name))) "")
 
 (mac alias-macro (current-macro-name desired-macro-name)
-  (defvar current-macro-name (translate current-macro-name)
-          desired-macro-name (translate desired-macro-name))
+  (var= current-macro-name (translate current-macro-name)
+        desired-macro-name (translate desired-macro-name))
   (set macros desired-macro-name (get macros current-macro-name))
   "")
 

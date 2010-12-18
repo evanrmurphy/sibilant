@@ -1,7 +1,6 @@
 (= sibilant.tokens {})
 
 (set sibilant.tokens
-<<<<<<< HEAD
       'regex              "(\\/(\\\\\\\/|[^\\/\\n])+\\/[glim]*)"
       'comment            "(;.*)"
       'string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
