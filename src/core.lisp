@@ -13,7 +13,7 @@
       'close-paren        "(\\))"
       'alternative-parens "\\{|\\[|\\}|\\]"
       'special-literal    (+ sibilant.tokens.special
-                            sibilant.tokens.literal))
+                             sibilant.tokens.literal))
 
 (= sibilant.token-precedence
    '(regex comment string number special-literal other-char
@@ -96,7 +96,6 @@
             object)))
 
 (var= macros {})
-
 (= sibilant.macros macros)
 
 (= macros.return
@@ -204,7 +203,6 @@
          args.length ");\n")
       args-string))
 
-;; brain 'splode
 (def macros.fn (arglist &rest body)
   (var= args (transform-args arglist)
         rest (first (select args
@@ -217,7 +215,7 @@
         (get body (- body.length 1))])
 
   (if (and (== (typeof (first body)) 'string)
-             (send (first body) match /^".*"$/))
+           (send (first body) match /^".*"$/))
       (= doc-string
          (+ "/* " (eval (body.shift)) " */\n")))
 
@@ -252,7 +250,6 @@
   (if (>= 1 pair-strings.length)
        (+ "{ " (join ", " pair-strings) " }")
       (+ "{" (indent (join ",\n" pair-strings)) "}")))
-
 
 (def literal (string)
   (inject (chain string
@@ -289,7 +286,6 @@
      (error (+ e.stack "\n"
                "Encountered when attempting to process:\n"
                (indent (call inspect token)))))))
-
 
 (= sibilant.translate translate)
 
