@@ -1,6 +1,7 @@
 (= sibilant.tokens {})
 
 (set sibilant.tokens
+<<<<<<< HEAD
       'regex              "(\\/(\\\\\\\/|[^\\/\\n])+\\/[glim]*)"
       'comment            "(;.*)"
       'string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
@@ -13,7 +14,7 @@
       'close-paren        "(\\))"
       'alternative-parens "\\{|\\[|\\}|\\]"
       'special-literal    (+ sibilant.tokens.special
-                            sibilant.tokens.literal))
+                             sibilant.tokens.literal))
 
 (= sibilant.token-precedence
    '(regex comment string number special-literal other-char

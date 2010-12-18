@@ -252,6 +252,17 @@
 (mac delmac (macro-name)
   (delete (get macros (translate macro-name))) "")
 
+(mac alias-macro (current-macro-name desired-macro-name)
+  (defvar current-macro-name (translate current-macro-name)
+          desired-macro-name (translate desired-macro-name))
+  (set macros desired-macro-name (get macros current-macro-name))
+  "")
+
+(mac rename-macro (current-macro-name desired-macro-name)
+  (macros.alias-macro current-macro-name desired-macro-name)
+  (macros.delmac current-macro-name)
+  "")
+
 (mac defhash (name &rest pairs)
   ((get macros 'var=) name (apply macros.hash pairs)))
 
