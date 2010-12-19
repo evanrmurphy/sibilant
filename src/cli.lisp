@@ -39,16 +39,14 @@
 
 (def cli.eval (&rest args)
   (if (empty? args)
-      (do
-	(var= stdin (process.open-stdin)
-	  data "")
-
-	(stdin.set-encoding "utf8")
-	(stdin.on 'data (fn (chunk) (= data (+ data chunk))))
-	(stdin.on 'end (fn (&rest args)
-			 (run-in-sandbox (sibilant.translate-all data)))))
-    (each (arg) args
-	  (run-in-sandbox (sibilant.translate-all arg)))))
+      (do! (var= stdin (process.open-stdin)
+                data "")
+          (stdin.set-encoding "utf8")
+          (stdin.on 'data (fn (chunk) (= data (+ data chunk))))
+          (stdin.on 'end (fn (&rest args)
+                           (run-in-sandbox (sibilant.translate-all data)))))
+      (each (arg) args
+        (run-in-sandbox (sibilant.translate-all arg)))))
 
 
 (def cli.help (&rest args)
@@ -138,7 +136,7 @@ $ sibilant --repl
            translated (sibilant.translate-file input-path))
       
       (if output-dir
-	  (do
+	  (do!
 	    (var=
 	      input-basename (path.basename input-path ".lisp")
 	      output-path (+ (path.join output-dir input-basename) ".js"))
