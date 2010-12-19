@@ -1,11 +1,11 @@
 #!/usr/bin/env sibilant -x
 
 (var= sibilant (require "../lib/sibilant")
-        sys      (require 'sys)
-        passes   0
-        fails    0)
+      sys      (require 'sys)
+      passes   0
+      fails    0)
 
-(console.log (concat "Testing " (sibilant.version-string)))
+(console.log (+ "Testing " (sibilant.version-string)))
 
 (def trim (string)
   (send string trim))
@@ -14,11 +14,11 @@
   (sys.print (if (== expected actual)
                   (do (++ passes) ".")
                  (do (++ fails)
-                     (concat "F\n\n" (+ passes fails) ": "
-                             (if message
-                                  (concat message "\n\n")
-                                 "")
-                             "expected " expected "\n\nbut got " actual "\n\n")))))
+                     (+ "F\n\n" (+ passes fails) ": "
+                        (if message
+                            (+ message "\n\n")
+                            "")
+                        "expected " expected "\n\nbut got " actual "\n\n")))))
 
 (def assert-translation (sibilant-code js-code)
   (assert-equal (trim js-code)
@@ -31,9 +31,10 @@
 (def assert-false (&rest args)
   (args.unshift false)
   (apply assert-equal args))
+
 (def assert-deep-equal (expected actual)
   (each (item index) expected
-            (assert-equal item (get actual index))))
+    (assert-equal item (get actual index))))
 
 (assert-deep-equal '(a b c) ['a 'b 'c])
 
@@ -71,23 +72,18 @@
 (assert-translation "(quote hello)" "\"hello\"")
 
 (assert-translation "'(hello world)"
-    "[ \"hello\", \"world\" ]")
+                    "[ \"hello\", \"world\" ]")
 (assert-translation "(quote (a b c))"
-    "[ \"a\", \"b\", \"c\" ]")
+                    "[ \"a\", \"b\", \"c\" ]")
 
 ; lists
-(assert-translation "(list)" "[  ]")
-
-(assert-translation "(list a b)"
-    "[ a, b ]")
+(assert-translation "(list)"     "[  ]")
+(assert-translation "(list a b)" "[ a, b ]")
 
 ; hashes
-(assert-translation "(hash)" "{  }")
-(assert-translation "(hash a b)"
-    "{ a: b }")
-(assert-translation "(hash a b c d)"
-    "{\n  a: b,\n  c: d\n}")
-
+(assert-translation "(hash)"         "{  }")
+(assert-translation "(hash a b)"     "{ a: b }")
+(assert-translation "(hash a b c d)" "{\n  a: b,\n  c: d\n}")
 
 ; when
 (assert-translation "(when a b)"
@@ -121,40 +117,44 @@
 ; do
 
 (assert-translation "(do a b c d e)"
-    "a;\nb;\nc;\nd;\nreturn e;")
-
+                    "a;\nb;\nc;\nd;\nreturn e;")
 
 ; join
 
 (assert-translation "(join \" \" (list a b c))"
-    "([ a, b, c ]).join(\" \")")
+                    "([ a, b, c ]).join(\" \")")
 
 ; meta
 
-(assert-translation "(meta (+ 5 2))" "7")
+(assert-translation "(meta (+ 5 2))"
+                    "7")
 
 ; comment
 
 (assert-translation "(comment hello)" "// hello")
 
 (assert-translation "(comment (fn () hello))"
-    (concat "// (function() {\n"
-	    "//   return hello;\n"
-	    "// })"))
+    (+ "// (function() {\n"
+	     "//   return hello;\n"
+	     "// })"))
 
 ; new
 
-(assert-translation "(new (prototype a b c))" "(new prototype(a, b, c))")
+(assert-translation "(new (prototype a b c))"
+                    "(new prototype(a, b, c))")
 
-(assert-translation "(thunk a b c)" "(function() {
+(assert-translation "(thunk a b c)"
+"(function() {
   a;
   b;
   return c;
 })")
 
-(assert-translation "(keys some-object)" "Object.keys(someObject)")
+(assert-translation "(keys some-object)"
+                    "Object.keys(someObject)")
 
-(assert-translation "(delete (get foo 'bar))" "delete (foo)[\"bar\"];")
+(assert-translation "(delete (get foo 'bar))"
+                    "delete (foo)[\"bar\"];")
 
 (assert-translation "(delete (get foo 'bar) bam.bibble)"
 "delete (foo)[\"bar\"];
@@ -169,13 +169,17 @@ delete bam.bibble;")
 
 
 
-(assert-translation "(var= a b c d)" "var a = b,\n    c = d;")
+(assert-translation "(var= a b c d)"
+                    "var a = b,\n    c = d;")
 
-(assert-translation "(function? x)" "typeof(x) === 'function'")
+(assert-translation "(function? x)"
+                    "typeof(x) === 'function'")
 
-(assert-translation "(number? x)" "typeof(x) === 'number'")
+(assert-translation "(number? x)"
+                    "typeof(x) === 'number'")
 
-(assert-translation "(def foo.bar (a) (* a 2))" "foo.bar = (function(a) {
+(assert-translation "(def foo.bar (a) (* a 2))"
+"foo.bar = (function(a) {
   return (a * 2);
 });")
 
@@ -291,7 +295,7 @@ afterInclude2();")
 (assert-equal 'default (switch 27 ('foo 1) (default 'default)))
 (assert-equal undefined (switch 10 (1 1)))
 (assert-equal 'hello (switch (+ 5 2)
-			     ((1 7) (concat 'he 'llo))
+			     ((1 7) (+ 'he 'llo))
 			     (7 "doesn't match because it's second")
 			     (default 10)))
 
@@ -332,7 +336,7 @@ afterInclude2();")
  (var= return-string
    (while (< i 10)
      (= i (+ i 1))
-     (concat "stopped at iteration: " i)))
+     (+ "stopped at iteration: " i)))
  (assert-equal "stopped at iteration: 10" return-string))
 
 (assert-translation
@@ -391,5 +395,5 @@ afterInclude2();")
 
 
 
-(console.log (concat "\n\n"  (+ passes fails) " total tests, "
-                     passes " passed, " fails " failed"))
+(console.log (+ "\n\n"  (+ passes fails) " total tests, "
+                passes " passed, " fails " failed"))
