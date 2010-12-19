@@ -126,11 +126,9 @@
                 "};"))
      "}).call(this)"))
 
-; want to name `?:` but can't yet
-
 (mac ?: (c t e)
-  (+ "(" (translate c) " ? " t
-                       " : " e")"))
+  (+ "(" (translate c) " ? " (translate t)
+                       " : " (translate e) ")"))
 
 (mac var= (&rest pairs)
      (+ "var "
