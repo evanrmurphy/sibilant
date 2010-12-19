@@ -138,6 +138,11 @@
   return e;
 }).call(this)")
 
+; do2!
+
+(assert-translation "(do2! a b c d e)"
+                    "(a, b, c, d, e)")
+
 ; join
 
 (assert-translation "(join \" \" (list a b c))"

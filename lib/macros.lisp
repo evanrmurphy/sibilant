@@ -135,8 +135,8 @@
      (indent (apply macros.do body))
      "}).call(this)"))
 
-; (mac var (x)
-;   (+ "var " (translate x) ";"))
+(mac do2! (&rest args)
+  (+ "(" (join ", " args) ")"))
 
 (mac var (&rest vs)
   (+ "var " (join ", " vs) ";"))
