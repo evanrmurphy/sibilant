@@ -5,7 +5,7 @@
       'comment            "(;.*)"
       'string             "(\"(([^\"]|(\\\\\"))*[^\\\\])?\")"
       'number             "(-?[0-9.]+)"
-      'literal            "([*.$a-zA-Z-=+?][*.a-zA-Z0-9-=+?]*(!)?)"
+      'literal            "([*.$a-zA-Z-=+?:][*.a-zA-Z0-9-=+?:]*(!)?)"
       'special            "([&']?)"
       'other-char         "([><=!\\+\\/\\*-]+)"
       'open-paren         "(\\()"
@@ -256,7 +256,9 @@
                  (replace /\*/g "_")
                  (replace /\?/g "__QUERY")
                  (replace /!$/  "__BANG")
-                 (replace /\+/  "__PLUS"))
+                 (replace /\+/  "__PLUS")
+                 (replace /:/g  "__COLON")
+                 )
           (string.match /-(.)/g)
           (fn (return-string match)
             (return-string.replace
