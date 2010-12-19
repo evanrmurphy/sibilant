@@ -45,11 +45,11 @@
           (if after-break
               (add-value return-hash 'after-break item)
               (if (label? item)
-                  (do (= current-label (label-for item))
-                      (add-value return-hash current-label true)
-                      (when (not (takes-args? item)) (reset-label)))
-                  (do (add-value return-hash current-label item)
-                      (reset-label)))))
+                  (do! (= current-label (label-for item))
+                       (add-value return-hash current-label true)
+                       (when (not (takes-args? item)) (reset-label)))
+                  (do! (add-value return-hash current-label item)
+                       (reset-label)))))
       return-hash)))
 
 (def process-options (config)
