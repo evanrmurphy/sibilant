@@ -135,6 +135,9 @@
      (indent (apply macros.do body))
      "}).call(this)"))
 
+(mac var (x)
+  (+ "var " (translate x) ";"))
+
 (mac var= (&rest pairs)
      (+ "var "
         (join ",\n    "

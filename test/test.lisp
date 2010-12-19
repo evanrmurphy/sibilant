@@ -187,6 +187,11 @@ delete bam.bibble;")
 })")
 
 
+(assert-translation "(var x)"
+                    "var x;")
+
+(assert-translation "(var a b c d)"
+                    "var a, b, c, d;")
 
 (assert-translation "(var= a b c d)"
                     "var a = b,\n    c = d;")
