@@ -44,10 +44,10 @@
        (def handle-token (token)
          (var= special (first token)
                token token)
-         (if (== special "'") (do! (= token (token.slice 1))
+         (?: (== special "'") (do! (= token (token.slice 1))
                                    (increase-nesting)
                                    (accept-token 'quote))
-                              (= special false))
+                              (=! special false))
 
            (specials.unshift (as-boolean special))
 
@@ -57,11 +57,11 @@
              ("{" (increase-nesting) (accept-token 'hash))
              ("[" (increase-nesting) (accept-token 'list))
              (default
-               (if (token.match (regex (+ "^" sibilant.tokens.number "$")))
+               (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
                     (accept-token (parse-float token))
                    (accept-token token))))
 
-           (if (and (!= token "(")
+           (?: (and (!= token "(")
                     (specials.shift))
                (decrease-nesting)))
 
@@ -75,7 +75,7 @@
                 (match master-regex)
                 (for-each handle-token))
          
-         (if (> parse-stack.length 1)
+         (?: (> parse-stack.length 1)
              (error "unexpected EOF, probably missing a )\n"
                     (call inspect (first parse-stack))))
          tokens)))
@@ -103,36 +103,38 @@
      (var= default-return
            (+ "return " (translate token)))
 
-     (if (array? token)
+     (?: (array? token)
           (switch (first token)
             ('(return throw do)
              (translate token))
             ('delete
              (var= delete-macro (get macros 'delete))
-             (if (< token.length 3)
+             (?: (< token.length 3)
                   default-return
                  (+ (apply delete-macro (token.slice 1 -1))
                     "\nreturn "
                     (delete-macro (last token)))))
             ('=
-             (if (< token.length 4) default-return
-                  (+ (apply (get macros '=)
-                            (token.slice 1 (- token.length 2)))
-                     "\nreturn "
-                     (apply (get macros '=)
-                            (token.slice -2)))))
+             (?: (< token.length 4)
+                  default-return
+                 (+ (apply (get macros '=)
+                           (token.slice 1 (- token.length 2)))
+                    "\nreturn "
+                    (apply (get macros '=)
+                           (token.slice -2)))))
             ('set
-             (if (< token.length 5) default-return
-                  (do! (var= obj             (second token)
-                             non-return-part (token.slice 2 (- token.length 2))
-                             return-part     (token.slice -2))
-                       (non-return-part.unshift obj)
-                       (return-part.unshift obj)
-                       (+ (apply macros.set
-                                 non-return-part)
-                          "\nreturn "
-                          (apply macros.set
-                                 return-part)))))
+             (?: (< token.length 5)
+                  default-return
+                 (do! (var= obj             (second token)
+                            non-return-part (token.slice 2 (- token.length 2))
+                            return-part     (token.slice -2))
+                      (non-return-part.unshift obj)
+                      (return-part.unshift obj)
+                      (+ (apply macros.set
+                                non-return-part)
+                         "\nreturn "
+                         (apply macros.set
+                                return-part)))))
             (default default-return))
           default-return)))
 
@@ -154,7 +156,7 @@
 
 (def macros.def (f-name &rest args-and-body)
   (var= f-name-tr (translate f-name)
-        start     (if (/\./ f-name-tr) "" "var "))
+        start     (?: (/\./ f-name-tr) "" "var "))
   (+ start f-name-tr " = "
      (apply macros.fn args-and-body)
      ";\n"))
@@ -177,11 +179,11 @@
 (def transform-args (arglist)
   (var= last undefined  args [])
   (each (arg) arglist
-    (if (== (first arg) "&")
-         (= last (arg.slice 1))
-        (do (args.push [(or last 'required) arg])
-            (= last null))))
-  (if last
+    (?: (== (first arg) "&")
+         (=! last (arg.slice 1))
+        (do! (args.push [(or last 'required) arg])
+             (= last null))))
+  (?: last
       (error (+ "unexpected argument modifier: " last)))
   args)
 
@@ -196,7 +198,7 @@
 (def build-args-string (args rest)
   (var= args-string "")
 
-  (if (defined? rest)
+  (?: (defined? rest)
       (+ args-string
          "var " (translate (second rest))
          " = Array.prototype.slice.call(arguments, "
@@ -214,12 +216,12 @@
        ['return
         (get body (- body.length 1))])
 
-  (if (and (== (typeof (first body)) 'string)
+  (?: (and (== (typeof (first body)) 'string)
            (send (first body) match /^".*"$/))
-      (= doc-string
+      (=! doc-string
          (+ "/* " (eval (body.shift)) " */\n")))
 
-  (var= no-rest-args   (if rest (args.slice 0 -1) args)
+  (var= no-rest-args   (?: rest (args.slice 0 -1) args)
         args-string    (build-args-string no-rest-args rest))
 
   (+ "(function("
@@ -233,9 +235,9 @@
      "})"))
 
 (def macros.quote (item)
-  (if (== "Array" item.constructor.name)
+  (?: (== "Array" item.constructor.name)
        (+ "[ " (join ", " (map item macros.quote)) " ]")
-      (if (== 'number (typeof item))
+      (?: (== 'number (typeof item))
            item
           (+ "\"" (literal item) "\""))))
 
@@ -247,7 +249,7 @@
        (bulk-map pairs (fn (key value)
                          (+ (translate key) ": "
                             (translate value)))))
-  (if (>= 1 pair-strings.length)
+  (?: (>= 1 pair-strings.length)
        (+ "{ " (join ", " pair-strings) " }")
       (+ "{" (indent (join ",\n" pair-strings)) "}")))
 
@@ -267,22 +269,22 @@
 
 (def translate (token hint)
   (var= hint hint)
-  (if (and hint (undefined? (get macros hint)))
-      (= hint undefined))
+  (?: (and hint (undefined? (get macros hint)))
+      (=! hint undefined))
   (when (defined? token)
-    (if (string? token)
-        (= token (token.trim)))
+    (?: (string? token)
+        (=! token (token.trim)))
     (try
-     (if (array? token)
-         (if (defined? (get macros (translate (first token))))
-             (apply (get macros (translate (first token))) (token.slice 1))
+     (?: (array? token)
+         (?: (defined? (get macros (translate (first token))))
+              (apply (get macros (translate (first token))) (token.slice 1))
              (apply (get macros (or hint 'call)) token))
-         (if (and (string? token)
+         (?: (and (string? token)
                   (token.match (regex (+ "^" sibilant.tokens.literal "$"))))
-             (literal token)
-             (if (and (string? token) (token.match (regex "^;")))
-                 (token.replace (regex "^;+") "//")
-                 (if (and (string? token) (== "\"" (first token) (last token)))
+              (literal token)
+             (?: (and (string? token) (token.match (regex "^;")))
+                  (token.replace (regex "^;+") "//")
+                 (?: (and (string? token) (== "\"" (first token) (last token)))
                      (chain token (split "\n") (join "\\n\" +\n\""))
                      token))))
      (error (+ e.stack "\n"
@@ -295,7 +297,7 @@
   (var= buffer "")
   (each (token) (tokenize contents)
     (var= line (translate token "statement"))
-    (if line (= buffer (+ buffer line "\n"))))
+    (?: line (=! buffer (+ buffer line "\n"))))
   buffer)
 
 (= sibilant.translate-all translate-all)
