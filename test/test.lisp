@@ -127,6 +127,17 @@
 (assert-translation "(do a b c d e)"
                     "a;\nb;\nc;\nd;\nreturn e;")
 
+; do!
+
+(assert-translation "(do! a b c d e)"
+"(function() {
+  a;
+  b;
+  c;
+  d;
+  return e;
+}).call(this)")
+
 ; join
 
 (assert-translation "(join \" \" (list a b c))"

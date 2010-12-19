@@ -130,6 +130,11 @@
   (+ "(" (translate c) " ? " (translate t)
                        " : " (translate e) ")"))
 
+(mac do! (&rest body)
+  (+ "(function() {"
+     (indent (apply macros.do body))
+     "}).call(this)"))
+
 (mac var= (&rest pairs)
      (+ "var "
         (join ",\n    "
