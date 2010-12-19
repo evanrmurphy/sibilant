@@ -44,9 +44,9 @@
        (def handle-token (token)
          (var= special (first token)
                token token)
-         (if (== special "'") (do (= token (token.slice 1))
-                                  (increase-nesting)
-                                  (accept-token 'quote))
+         (if (== special "'") (do! (= token (token.slice 1))
+                                   (increase-nesting)
+                                   (accept-token 'quote))
                               (= special false))
 
            (specials.unshift (as-boolean special))
@@ -123,16 +123,16 @@
                             (token.slice -2)))))
             ('set
              (if (< token.length 5) default-return
-                  (do (var= obj             (second token)
-                            non-return-part (token.slice 2 (- token.length 2))
-                            return-part     (token.slice -2))
-                      (non-return-part.unshift obj)
-                      (return-part.unshift obj)
-                      (+ (apply macros.set
-                                non-return-part)
-                         "\nreturn "
-                         (apply macros.set
-                                return-part)))))
+                  (do! (var= obj             (second token)
+                             non-return-part (token.slice 2 (- token.length 2))
+                             return-part     (token.slice -2))
+                       (non-return-part.unshift obj)
+                       (return-part.unshift obj)
+                       (+ (apply macros.set
+                                 non-return-part)
+                          "\nreturn "
+                          (apply macros.set
+                                 return-part)))))
             (default default-return))
           default-return)))
 
