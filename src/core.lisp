@@ -142,8 +142,8 @@
 (def macros.do (&rest body)
   (var= last-index
         (-math.max 0 (- body.length 1)))
-  (set body last-index
-       ['return (get body last-index)])
+  (= (get body last-index)
+     ['return (get body last-index)])
   (join "\n"
         (map body (fn (arg)
                     (+ (translate arg) ";")))))
