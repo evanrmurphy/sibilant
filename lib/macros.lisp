@@ -193,6 +193,18 @@
                          (+ (translate name) " = "
                             (translate value) ";")))))
 
+(mac =! (&rest args)
+  (var= last-index
+        (-math.max 0 (- args.length 2)))
+  (= (get args last-index)
+     ['return (get args last-index)])
+  (+ "(function() {"
+     (join "\n"
+           (bulk-map args (fn (name value)
+                              (+ (translate name) " = "
+                                 (translate value) ";"))))
+     "}).call(this)"))
+
 (mac macro-list ()
   (+ "["
      (indent (join ",\n"
