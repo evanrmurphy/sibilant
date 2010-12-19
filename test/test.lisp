@@ -138,10 +138,26 @@
   return e;
 }).call(this)")
 
+; =2!
+
+(assert-translation "(=2! x 1 y 2)"
+                    "(x = 1, y = 2)")
+
+
 ; do2!
 
 (assert-translation "(do2! a b c d e)"
                     "(a, b, c, d, e)")
+
+; Not working because =2! doesn't expand in this context
+; Update: it's do2!'s fault, not =2!. The problem seems
+;  to be that do2! doesn't expand/evaluate its args, just
+;  processes them raw. The sibilant macro system in its
+;  present state seems very bare-bones.
+; (assert-translation "(do2! 
+;                        (=2! x 1 y 2)
+;                        (alert x))"
+;                     "((x = 1, y = 2), alert(x))")
 
 ; join
 

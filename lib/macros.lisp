@@ -211,6 +211,14 @@
                                  (translate value) ";"))))
      "}).call(this)"))
 
+(mac =2! (&rest args)
+  (+ "("
+     (join ", "
+           (bulk-map args
+                     (fn (name val)
+                       (+ name " = " val))))
+     ")"))
+
 (mac macro-list ()
   (+ "["
      (indent (join ",\n"
