@@ -114,6 +114,9 @@
   };
 }).call(this)")
 
+(assert-translation "(ternary a b c)"
+                    "(a ? b : c)")
+
 ; do
 
 (assert-translation "(do a b c d e)"

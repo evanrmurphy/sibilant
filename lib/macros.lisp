@@ -126,6 +126,12 @@
                 "};"))
      "}).call(this)"))
 
+; want to name `?:` but can't yet
+
+(mac ternary (c t e)
+  (+ "(" (translate c) " ? " t
+                       " : " e")"))
+
 (mac var= (&rest pairs)
      (+ "var "
         (join ",\n    "
