@@ -128,7 +128,7 @@
 
 ; want to name `?:` but can't yet
 
-(mac ternary (c t e)
+(mac ?: (c t e)
   (+ "(" (translate c) " ? " t
                        " : " e")"))
 

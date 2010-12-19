@@ -119,7 +119,7 @@
   };
 }).call(this)")
 
-(assert-translation "(ternary a b c)"
+(assert-translation "(?: a b c)"
                     "(a ? b : c)")
 
 ; do
