@@ -112,7 +112,7 @@
   } else {
     return c;
   };
-})()")
+}).call(this)")
 
 ; do
 

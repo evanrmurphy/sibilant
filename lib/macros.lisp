@@ -124,7 +124,7 @@
                 "} else {"
                 (indent (macros.do falsebody))
                 "};"))
-     "})()"))
+     "}).call(this)"))
 
 (mac var= (&rest pairs)
      (+ "var "
