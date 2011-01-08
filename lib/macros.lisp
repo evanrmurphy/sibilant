@@ -208,9 +208,9 @@
 
 (mac macro-list ()
   (+ "["
-     (indent (join ",\n"
-                   (map (-object.keys macros)
-                        macros.quote)))
+     (join ", "
+           (map (-object.keys macros)
+                macros.quote))
      "]"))
 
 (mac macex (name)
@@ -228,14 +228,14 @@
 (mac force-semi () (+ ";\n"))
 
 (mac chain (object &rest calls)
-  (+ (translate object) " // chain"
-     (indent (join "\n"
-                   (map calls
-                        (fn (call, index)
-                            (var= method (first call))
-                            (var= args (rest call))
-                            (+ "." (translate method)
-                               "(" (join ", " (map args translate)) ")")))))))
+  (+ (translate object)
+     (join "\n"
+           (map calls
+                (fn (call, index)
+                    (var= method (first call))
+                    (var= args (rest call))
+                    (+ "." (translate method)
+                       "(" (join ", " (map args translate)) ")"))))))
 
 (mac try (tryblock catchblock)
   (+ "(function() {"
