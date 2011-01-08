@@ -92,32 +92,15 @@
 
 ; when
 (assert-translation "(when a b)"
-"(function() {
-  if (a) {
-    return b;
-  };
-})()")
+                    "(function() { if (a) { return b; } }).call(this)")
 
 (assert-translation "(when a b c d)"
-"(function() {
-  if (a) {
-    b;
-    c;
-    return d;
-  };
-})()")
-
+                    "(function() { if (a) { b; c; return d; } }).call(this)")
 
 ; if
 
 (assert-translation "(if a b c)"
-"(function() {
-  if (a) {
-    return b;
-  } else {
-    return c;
-  };
-}).call(this)")
+                    "(function() { if (a) { return b; } else { return c; } }).call(this)")
 
 (assert-translation "(?: a b c)"
                     "(a ? b : c)")
@@ -125,18 +108,12 @@
 ; do
 
 (assert-translation "(do a b c d e)"
-                    "a;\nb;\nc;\nd;\nreturn e;")
+                    "a; b; c; d; return e;")
 
 ; do!
 
 (assert-translation "(do! a b c d e)"
-"(function() {
-  a;
-  b;
-  c;
-  d;
-  return e;
-}).call(this)")
+                    "(function() { a; b; c; d; return e; }).call(this)")
 
 ; =2!
 
@@ -311,8 +288,7 @@ delete bam.bibble;")
   switch((5 + 2)) {
   case \"u\":
   case \"v\":
-    wibble();
-    return foo(bar);
+    wibble(); return foo(bar);
   }
 })()")
 

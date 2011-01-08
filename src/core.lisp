@@ -146,7 +146,7 @@
         (-math.max 0 (- body.length 1)))
   (= (get body last-index)
      ['return (get body last-index)])
-  (join "\n"
+  (join " "
         (map body (fn (arg)
                     (+ (translate arg) ";")))))
 

@@ -118,22 +118,14 @@
   (macros.get (macros.send arr 'slice -1) 0))
 
 (mac if (arg truebody falsebody)
-  (+ "(function() {"
-     (indent (+ "if (" (translate arg) ") {"
-                (indent (macros.do truebody))
-                "} else {"
-                (indent (macros.do falsebody))
-                "};"))
-     "}).call(this)"))
+  (+ "(function() { if (" (translate arg) ") { " (macros.do truebody) " } else { " (macros.do falsebody) " } " "}).call(this)"))
 
 (mac ?: (c t e)
   (+ "(" (translate c) " ? " (translate t)
                        " : " (translate e) ")"))
 
 (mac do! (&rest body)
-  (+ "(function() {"
-     (indent (apply macros.do body))
-     "}).call(this)"))
+  (+ "(function() { " (apply macros.do body) " }).call(this)"))
 
 (mac do2! (&rest args)
   (+ "(" (join ", " args) ")"))
@@ -170,12 +162,7 @@
      translated ".constructor.name === \"Array\""))
 
 (mac when (arg &rest body)
-  (+ "(function() {"
-     (indent (+
-              "if (" (translate arg) ") {"
-              (indent (apply macros.do body))
-              "};"))
-     "})()"))
+  (+ "(function() { if (" (translate arg) ") { " (apply macros.do body) " } " "}).call(this)"))
 
 (mac not (exp)
   (+ "(!" (translate exp) ")"))
