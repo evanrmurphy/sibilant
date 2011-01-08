@@ -51,8 +51,8 @@
   (+ (translate object) "." (translate method)
      "(" (join ", " (map args translate)) ")"))
 
-(mac new (fn)
-  (+ "(new " (translate fn) ")"))
+(mac new (f)
+  (+ "(new " (translate f) ")"))
 
 (mac regex (string glim)
   ((get macros 'new) (macros.call "RegExp" string (or glim "undefined"))))
@@ -69,8 +69,8 @@
 (mac meta (body)
   (eval (translate body)))
 
-(mac apply (fn arglist)
-  (macros.send fn 'apply 'undefined arglist))
+(mac apply (f arglist)
+  (macros.send f 'apply 'undefined arglist))
 
 (mac zero? (item)
   ((get macros "==") (translate item) 0))
