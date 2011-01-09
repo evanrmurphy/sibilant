@@ -88,7 +88,7 @@
 ; hashes
 (assert-translation "(hash)"         "{  }")
 (assert-translation "(hash a b)"     "{ a: b }")
-(assert-translation "(hash a b c d)" "{\n  a: b,\n  c: d\n}")
+(assert-translation "(hash a b c d)" "{a: b, c: d}")
 
 ; when
 (assert-translation "(when a b)"
@@ -226,10 +226,7 @@ delete bam.bibble;")
 (hash)[k2] = v2;")
 
 (assert-translation "(defhash hash a b c d)"
-"var hash = {
-  a: b,
-  c: d
-};")
+"var hash = {a: b, c: d};")
 
 (assert-translation "(each (x) arr a b c)"
 "arr.forEach((function(x) {
@@ -318,10 +315,7 @@ afterInclude2();")
 "[ foo, bar, baz() ]")
 
 (assert-translation "[[] {} baz {q r s [t]}]"
-"[ [  ], {  }, baz, {
-  q: r,
-  s: [ t ]
-} ]")
+"[ [  ], {  }, baz, {q: r, s: [ t ]} ]")
 
 ; (assert-translation "{ this: is, valid: [\"json\"]}",
 ; "{

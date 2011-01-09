@@ -257,7 +257,7 @@
                             (translate value)))))
   (?: (>= 1 pair-strings.length)
        (+ "{ " (join ", " pair-strings) " }")
-      (+ "{" (indent (join ",\n" pair-strings)) "}")))
+       (+ "{" (join ", " pair-strings) "}")))
 
 (def literal (string)
   (inject (chain string
@@ -295,7 +295,7 @@
                      token))))
      (error (+ e.stack "\n"
                "Encountered when attempting to process:\n"
-               (indent (call inspect token)))))))
+               (call inspect token))))))
 
 (= sibilant.translate translate)
 
