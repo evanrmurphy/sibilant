@@ -49,21 +49,21 @@
                                    (accept-token 'quote))
                               (=! special false))
 
-           (specials.unshift (as-boolean special))
+         (specials.unshift (as-boolean special))
 
-           (switch token
-             ("(" (increase-nesting))
-             (("]" "}" ")") (decrease-nesting))
-             ("{" (increase-nesting) (accept-token 'hash))
-             ("[" (increase-nesting) (accept-token 'list))
-             (default
-               (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
-                    (accept-token (parse-float token))
-                   (accept-token token))))
+         (switch token
+           ("(" (increase-nesting))
+           (("]" "}" ")") (decrease-nesting))
+           ("{" (increase-nesting) (accept-token 'hash))
+           ("[" (increase-nesting) (accept-token 'list))
+           (default
+             (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
+                  (accept-token (parse-float token))
+                 (accept-token token))))
 
-           (?: (and (!= token "(")
-                    (specials.shift))
-               (decrease-nesting)))
+         (?: (and (!= token "(")
+                  (specials.shift))
+             (decrease-nesting)))
 
          (var= ordered-regexen
                 (map sibilant.token-precedence
