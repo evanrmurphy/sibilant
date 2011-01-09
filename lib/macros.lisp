@@ -238,13 +238,7 @@
                        "(" (join ", " (map args translate)) ")"))))))
 
 (mac try (tryblock catchblock)
-  (+ "(function() {"
-     (indent (+ "try {"
-                (indent (macros.do tryblock))
-                "} catch (e) {"
-                (indent (macros.do catchblock))
-                "}"))
-     "})()"))
+  (+ "(function() { try { " (macros.do tryblock) " } catch (e) { " (macros.do catchblock) " } }).call(this)"))
 
 (mac while (condition &rest block)
   (macros.scoped
