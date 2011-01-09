@@ -51,15 +51,21 @@
 
          (specials.unshift (as-boolean special))
 
-         (switch token
-           ("(" (increase-nesting))
-           (("]" "}" ")") (decrease-nesting))
-           ("{" (increase-nesting) (accept-token 'hash))
-           ("[" (increase-nesting) (accept-token 'list))
-           (default
-             (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
-                  (accept-token (parse-float token))
-                 (accept-token token))))
+         (?: (== token "(")       (increase-nesting)
+
+             (?: (or (==  token "]")
+                     (==  token "}")
+                     (==  token ")")) (decrease-nesting)
+
+                     (?: (== token "{")       (do! (increase-nesting)
+                                                   (accept-token 'hash))
+
+                         (?: (== token "[")       (do! (increase-nesting)
+                                                       (accept-token 'list))
+
+                             (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
+                                 (accept-token (parse-float token))
+                                 (accept-token token))))))
 
          (?: (and (!= token "(")
                   (specials.shift))
