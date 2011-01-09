@@ -243,9 +243,8 @@
 (mac while (condition &rest block)
   (macros.scoped
    ((get macros 'var=) '**return-value**)
-   (+ "while (" (translate condition) ") {"
-      (indent ((get macros '=) '**return-value**
-               (apply macros.scoped block))))
+   (+ "while (" (translate condition) ") { "
+      ((get macros '=) '**return-value** (apply macros.scoped block)))
    "}"
    '**return-value**))
 

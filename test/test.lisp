@@ -341,12 +341,11 @@ afterInclude2();")
  "(while (< i 10) (console.log 'here) (alert 'there) 'everywhere)"
  "(function() {
   var __returnValue__ = undefined;;
-  while ((i < 10)) {
-    __returnValue__ = (function() {
-      console.log(\"here\");
-      alert(\"there\");
-      return \"everywhere\";
-    })();;
+  while ((i < 10)) { __returnValue__ = (function() {
+    console.log(\"here\");
+    alert(\"there\");
+    return \"everywhere\";
+  })();;
   };
   return __returnValue__;
 })()")
