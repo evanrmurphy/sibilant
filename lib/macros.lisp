@@ -304,7 +304,7 @@
                          (+ "case " (translate case-name) ":"))))
            
            (lines.push (+ case-string
-                          (indent (apply macros.do (case-def.slice 1))))))
+                          (apply macros.do (case-def.slice 1)))))
 
                                         ; the following two lines are to get the whitespace right
                                         ; this is necessary because switches are indented weird
