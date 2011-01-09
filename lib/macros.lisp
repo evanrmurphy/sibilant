@@ -312,5 +312,5 @@
           (chain (get lines (- lines.length 1))
                  (concat "}"))) ; s/concat/\+/ doesn't compile
 
-     (+ "(function() {" (apply indent lines) "})()"))
+     (+ "(function() {" (join " " (map lines translate)) "})()"))
 
