@@ -206,13 +206,11 @@ delete bam.bibble;")
 });")
 
 (assert-translation "(each-key key hash a b c)"
-"(function() {
-  for (var key in hash) (function() {
-    a;
-    b;
-    return c;
-  })();
-})();")
+"(function() { for (var key in hash) (function() {
+  a;
+  b;
+  return c;
+})(); }).call(this);")
 
 (assert-translation "(scoped a b c)"
 "(function() {

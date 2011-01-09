@@ -277,12 +277,7 @@
   (macros.call (apply macros.thunk body)))
 
 (mac each-key (as obj &rest body)
-  (+ "(function() {"
-     (indent
-      (+ "for (var " (translate as) " in " (translate obj) ") "
-         (apply macros.scoped body)
-         ";"))
-     "})();"))
+  (+ "(function() { for (var " (translate as) " in " (translate obj) ") " (apply macros.scoped body) ";" " }).call(this);"))
 
 (mac match? (regexp string)
   (macros.send string 'match regexp))
