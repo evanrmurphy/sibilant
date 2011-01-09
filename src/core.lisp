@@ -172,7 +172,7 @@
         name (translate name))
   (try (set macros name (eval js))
        (error (+ "error in parsing macro "
-                 name ":\n" (indent js))))
+                 name ":\n" (translate js))))
   undefined)
 
 (def macros.concat (&rest args)
