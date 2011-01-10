@@ -51,8 +51,8 @@
   (+ (translate object) "." (translate method)
      "(" (join ", " (map args translate)) ")"))
 
-(mac new (fn)
-  (+ "(new " (translate fn) ")"))
+(mac new (f)
+  (+ "(new " (translate f) ")"))
 
 (mac regex (string glim)
   ((get macros 'new) (macros.call "RegExp" string (or glim "undefined"))))
@@ -69,8 +69,8 @@
 (mac meta (body)
   (eval (translate body)))
 
-(mac apply (fn arglist)
-  (macros.send fn 'apply 'undefined arglist))
+(mac apply (f arglist)
+  (macros.send f 'apply 'undefined arglist))
 
 (mac zero? (item)
   ((get macros "==") (translate item) 0))
@@ -118,22 +118,14 @@
   (macros.get (macros.send arr 'slice -1) 0))
 
 (mac if (arg truebody falsebody)
-  (+ "(function() {"
-     (indent (+ "if (" (translate arg) ") {"
-                (indent (macros.do truebody))
-                "} else {"
-                (indent (macros.do falsebody))
-                "};"))
-     "}).call(this)"))
+  (+ "(function() { if (" (translate arg) ") { " (macros.do truebody) " } else { " (macros.do falsebody) " } " "}).call(this)"))
 
 (mac ?: (c t e)
   (+ "(" (translate c) " ? " (translate t)
                        " : " (translate e) ")"))
 
 (mac do! (&rest body)
-  (+ "(function() {"
-     (indent (apply macros.do body))
-     "}).call(this)"))
+  (+ "(function() { " (apply macros.do body) " }).call(this)"))
 
 (mac do2! (&rest args)
   (+ "(" (join ", " args) ")"))
@@ -170,12 +162,7 @@
      translated ".constructor.name === \"Array\""))
 
 (mac when (arg &rest body)
-  (+ "(function() {"
-     (indent (+
-              "if (" (translate arg) ") {"
-              (indent (apply macros.do body))
-              "};"))
-     "})()"))
+  (+ "(function() { if (" (translate arg) ") { " (apply macros.do body) " } " "}).call(this)"))
 
 (mac not (exp)
   (+ "(!" (translate exp) ")"))
@@ -221,9 +208,9 @@
 
 (mac macro-list ()
   (+ "["
-     (indent (join ",\n"
-                   (map (-object.keys macros)
-                        macros.quote)))
+     (join ", "
+           (map (-object.keys macros)
+                macros.quote))
      "]"))
 
 (mac macex (name)
@@ -241,30 +228,23 @@
 (mac force-semi () (+ ";\n"))
 
 (mac chain (object &rest calls)
-  (+ (translate object) " // chain"
-     (indent (join "\n"
-                   (map calls
-                        (fn (call, index)
-                            (var= method (first call))
-                            (var= args (rest call))
-                            (+ "." (translate method)
-                               "(" (join ", " (map args translate)) ")")))))))
+  (+ (translate object)
+     (join "\n"
+           (map calls
+                (fn (call, index)
+                    (var= method (first call))
+                    (var= args (rest call))
+                    (+ "." (translate method)
+                       "(" (join ", " (map args translate)) ")"))))))
 
 (mac try (tryblock catchblock)
-  (+ "(function() {"
-     (indent (+ "try {"
-                (indent (macros.do tryblock))
-                "} catch (e) {"
-                (indent (macros.do catchblock))
-                "}"))
-     "})()"))
+  (+ "(function() { try { " (macros.do tryblock) " } catch (e) { " (macros.do catchblock) " } }).call(this)"))
 
 (mac while (condition &rest block)
   (macros.scoped
    ((get macros 'var=) '**return-value**)
-   (+ "while (" (translate condition) ") {"
-      (indent ((get macros '=) '**return-value**
-               (apply macros.scoped block))))
+   (+ "while (" (translate condition) ") { "
+      ((get macros '=) '**return-value** (apply macros.scoped block)))
    "}"
    '**return-value**))
 
@@ -297,12 +277,7 @@
   (macros.call (apply macros.thunk body)))
 
 (mac each-key (as obj &rest body)
-  (+ "(function() {"
-     (indent
-      (+ "for (var " (translate as) " in " (translate obj) ") "
-         (apply macros.scoped body)
-         ";"))
-     "})();"))
+  (+ "(function() { for (var " (translate as) " in " (translate obj) ") " (apply macros.scoped body) ";" " }).call(this);"))
 
 (mac match? (regexp string)
   (macros.send string 'match regexp))
@@ -329,7 +304,7 @@
                          (+ "case " (translate case-name) ":"))))
            
            (lines.push (+ case-string
-                          (indent (apply macros.do (case-def.slice 1))))))
+                          (apply macros.do (case-def.slice 1)))))
 
                                         ; the following two lines are to get the whitespace right
                                         ; this is necessary because switches are indented weird
@@ -337,5 +312,5 @@
           (chain (get lines (- lines.length 1))
                  (concat "}"))) ; s/concat/\+/ doesn't compile
 
-     (+ "(function() {" (apply indent lines) "})()"))
+     (+ "(function() {" (join " " (map lines translate)) "})()"))
 

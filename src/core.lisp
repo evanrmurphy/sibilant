@@ -49,21 +49,27 @@
                                    (accept-token 'quote))
                               (=! special false))
 
-           (specials.unshift (as-boolean special))
+         (specials.unshift (as-boolean special))
 
-           (switch token
-             ("(" (increase-nesting))
-             (("]" "}" ")") (decrease-nesting))
-             ("{" (increase-nesting) (accept-token 'hash))
-             ("[" (increase-nesting) (accept-token 'list))
-             (default
-               (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
-                    (accept-token (parse-float token))
-                   (accept-token token))))
+         (?: (== token "(")       (increase-nesting)
 
-           (?: (and (!= token "(")
-                    (specials.shift))
-               (decrease-nesting)))
+             (?: (or (==  token "]")
+                     (==  token "}")
+                     (==  token ")")) (decrease-nesting)
+
+                     (?: (== token "{")       (do! (increase-nesting)
+                                                   (accept-token 'hash))
+
+                         (?: (== token "[")       (do! (increase-nesting)
+                                                       (accept-token 'list))
+
+                             (?: (token.match (regex (+ "^" sibilant.tokens.number "$")))
+                                 (accept-token (parse-float token))
+                                 (accept-token token))))))
+
+         (?: (and (!= token "(")
+                  (specials.shift))
+             (decrease-nesting)))
 
          (var= ordered-regexen
                 (map sibilant.token-precedence
@@ -146,7 +152,7 @@
         (-math.max 0 (- body.length 1)))
   (= (get body last-index)
      ['return (get body last-index)])
-  (join "\n"
+  (join " "
         (map body (fn (arg)
                     (+ (translate arg) ";")))))
 
@@ -166,7 +172,7 @@
         name (translate name))
   (try (set macros name (eval js))
        (error (+ "error in parsing macro "
-                 name ":\n" (indent js))))
+                 name ":\n" (translate js))))
   undefined)
 
 (def macros.concat (&rest args)
@@ -251,7 +257,7 @@
                             (translate value)))))
   (?: (>= 1 pair-strings.length)
        (+ "{ " (join ", " pair-strings) " }")
-      (+ "{" (indent (join ",\n" pair-strings)) "}")))
+       (+ "{" (join ", " pair-strings) "}")))
 
 (def literal (string)
   (inject (chain string
@@ -289,7 +295,7 @@
                      token))))
      (error (+ e.stack "\n"
                "Encountered when attempting to process:\n"
-               (indent (call inspect token)))))))
+               (call inspect token))))))
 
 (= sibilant.translate translate)
 

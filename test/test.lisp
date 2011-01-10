@@ -88,36 +88,19 @@
 ; hashes
 (assert-translation "(hash)"         "{  }")
 (assert-translation "(hash a b)"     "{ a: b }")
-(assert-translation "(hash a b c d)" "{\n  a: b,\n  c: d\n}")
+(assert-translation "(hash a b c d)" "{a: b, c: d}")
 
 ; when
 (assert-translation "(when a b)"
-"(function() {
-  if (a) {
-    return b;
-  };
-})()")
+                    "(function() { if (a) { return b; } }).call(this)")
 
 (assert-translation "(when a b c d)"
-"(function() {
-  if (a) {
-    b;
-    c;
-    return d;
-  };
-})()")
-
+                    "(function() { if (a) { b; c; return d; } }).call(this)")
 
 ; if
 
 (assert-translation "(if a b c)"
-"(function() {
-  if (a) {
-    return b;
-  } else {
-    return c;
-  };
-}).call(this)")
+                    "(function() { if (a) { return b; } else { return c; } }).call(this)")
 
 (assert-translation "(?: a b c)"
                     "(a ? b : c)")
@@ -125,18 +108,12 @@
 ; do
 
 (assert-translation "(do a b c d e)"
-                    "a;\nb;\nc;\nd;\nreturn e;")
+                    "a; b; c; d; return e;")
 
 ; do!
 
 (assert-translation "(do! a b c d e)"
-"(function() {
-  a;
-  b;
-  c;
-  d;
-  return e;
-}).call(this)")
+                    "(function() { a; b; c; d; return e; }).call(this)")
 
 ; =2!
 
@@ -229,13 +206,11 @@ delete bam.bibble;")
 });")
 
 (assert-translation "(each-key key hash a b c)"
-"(function() {
-  for (var key in hash) (function() {
-    a;
-    b;
-    return c;
-  })();
-})();")
+"(function() { for (var key in hash) (function() {
+  a;
+  b;
+  return c;
+})(); }).call(this);")
 
 (assert-translation "(scoped a b c)"
 "(function() {
@@ -251,10 +226,7 @@ delete bam.bibble;")
 (hash)[k2] = v2;")
 
 (assert-translation "(defhash hash a b c d)"
-"var hash = {
-  a: b,
-  c: d
-};")
+"var hash = {a: b, c: d};")
 
 (assert-translation "(each (x) arr a b c)"
 "arr.forEach((function(x) {
@@ -262,60 +234,6 @@ delete bam.bibble;")
   b;
   return c;
 }))")
-
-(assert-translation "(switch a (q 1))"
-"(function() {
-  switch(a) {
-  case q:
-    return 1;
-  }
-})()")
-
-(assert-translation "(switch a ('q 2))"
-"(function() {
-  switch(a) {
-  case \"q\":
-    return 2;
-  }
-})()"
-)
-(assert-translation "(switch a ((a b) t))"
-"(function() {
-  switch(a) {
-  case a:
-  case b:
-    return t;
-  }
-})()")
-
-(assert-translation "(switch a ((r 's) l))"
-"(function() {
-  switch(a) {
-  case r:
-  case \"s\":
-    return l;
-  }
-})()")
-
-(assert-translation "(switch 1 ((1 2) 'one))"
-"(function() {
-  switch(1) {
-  case 1:
-  case 2:
-    return \"one\";
-  }
-})()")
-
-(assert-translation "(switch (+ 5 2) ('(u v) (wibble) (foo bar)))"
-"(function() {
-  switch((5 + 2)) {
-  case \"u\":
-  case \"v\":
-    wibble();
-    return foo(bar);
-  }
-})()")
-
 
 (assert-translation "(match? /regexp/ foo)" "foo.match(/regexp/)")
 
@@ -335,14 +253,6 @@ afterInclude1();
 2
 
 afterInclude2();")
-
-(assert-equal 2 (switch 'a ('a 1 2)))
-(assert-equal 'default (switch 27 ('foo 1) (default 'default)))
-(assert-equal undefined (switch 10 (1 1)))
-(assert-equal 'hello (switch (+ 5 2)
-			     ((1 7) (+ 'he 'llo))
-			     (7 "doesn't match because it's second")
-			     (default 10)))
 
 (assert-translation "(thunk (= b c d e))"
 "(function() {
@@ -365,12 +275,11 @@ afterInclude2();")
  "(while (< i 10) (console.log 'here) (alert 'there) 'everywhere)"
  "(function() {
   var __returnValue__ = undefined;;
-  while ((i < 10)) {
-    __returnValue__ = (function() {
-      console.log(\"here\");
-      alert(\"there\");
-      return \"everywhere\";
-    })();;
+  while ((i < 10)) { __returnValue__ = (function() {
+    console.log(\"here\");
+    alert(\"there\");
+    return \"everywhere\";
+  })();;
   };
   return __returnValue__;
 })()")
@@ -386,16 +295,6 @@ afterInclude2();")
 
 (assert-translation
  "(return (do (return a)))" "return a;")
-
-(assert-translation
- "(return (do (switch a (b c))))"
-
-"return (function() {
-  switch(a) {
-  case b:
-    return c;
-  }
-})();")
 
 (assert-translation "(== a b c)" "
 (a === b &&
@@ -416,10 +315,7 @@ afterInclude2();")
 "[ foo, bar, baz() ]")
 
 (assert-translation "[[] {} baz {q r s [t]}]"
-"[ [  ], {  }, baz, {
-  q: r,
-  s: [ t ]
-} ]")
+"[ [  ], {  }, baz, {q: r, s: [ t ]} ]")
 
 ; (assert-translation "{ this: is, valid: [\"json\"]}",
 ; "{
