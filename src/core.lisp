@@ -168,11 +168,9 @@
      ";\n"))
 
 (def macros.mac (name &rest args-and-body)
-  (var= js   (apply macros.fn args-and-body)
-        name (translate name))
-  (try (set macros name (eval js))
-       (error (+ "error in parsing macro "
-                 name ":\n" (translate js))))
+  (var= name (translate name)
+        js   (apply macros.fn args-and-body))
+  (set macros name (eval js))
   undefined)
 
 (def macros.concat (&rest args)
