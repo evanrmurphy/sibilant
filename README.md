@@ -1,1 +1,1 @@
-See [LavaScript](https://github.com/evanrmurphy/lava-script). This fork of Siblant has grown into a separate project.
+This fork has grown into a separate project. See [LavaScript](https://github.com/evanrmurphy/lava-script). 
